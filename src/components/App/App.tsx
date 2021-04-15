@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -7,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import logo from '../../assets/logo.svg';
 import Counter from '../Counter/Counter';
 import Swag from '../Swag/Swag';
+import Roles from '../Roles/Roles';
 
 import styles from './App.module.css';
 
@@ -20,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   separateScreen: {
   },
   paper: {
+    padding: theme.spacing(2),
     height: 240,
   },
   paperSimulator: {
@@ -38,6 +41,7 @@ function App() {
             <Grid className={classes.separateScreen} item container spacing={3}>
               <Grid item xs={6} md={4} lg={2}>
                 <Paper className={classes.paper}>
+                  <Roles />
                 </Paper>
               </Grid>
 
