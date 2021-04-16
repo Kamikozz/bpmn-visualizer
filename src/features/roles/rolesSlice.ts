@@ -15,7 +15,16 @@ export const createNewRole = (name: string) => {
   };
 };
 
-const initialState: RolesState = {};
+const initialState: RolesState = {
+  'role0': {
+    id: 'role0',
+    name: 'менеджер',
+  },
+  'role1': {
+    id: 'role1',
+    name: 'сотрудник',
+  },
+};
 
 // export const incrementAsync = createAsyncThunk(
 //   'counter/fetchCount',
@@ -33,6 +42,9 @@ export const rolesSlice = createSlice({
     addRole: (state, action: PayloadAction<string>) => {
       const role = createNewRole(action.payload);
       state[role.id] = role;
+    },
+    removeRole: (state, action: PayloadAction<string>) => {
+      delete state[action.payload];
     },
     // increment: (state) => {
     //   state.value += 1;
@@ -57,7 +69,7 @@ export const rolesSlice = createSlice({
   // },
 });
 
-export const { addRole } = rolesSlice.actions;
+export const { addRole, removeRole } = rolesSlice.actions;
 export const selectRoles = (state: RootState) => state.roles;
 // export const incrementIfOdd = (amount: number): AppThunk => (
 //   dispatch,

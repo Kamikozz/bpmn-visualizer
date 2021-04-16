@@ -5,9 +5,14 @@ import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 
-import { addRole, selectRoles, Role } from '../../features/roles/rolesSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { addRole, removeRole, selectRoles, Role } from '../../features/roles/rolesSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,15 +21,32 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       height: '100%',
     },
+    margin: {
+      margin: theme.spacing(1),
+    },
+    marginTop: {
+      marginTop: theme.spacing(1),
+    },
+    form: {
+      display: 'flex',
+    },
+    roleInput: {
+    },
+    addButton: {
+      marginLeft: theme.spacing(1),
+    },
+    iconButton: {
+      padding: 10,
+    },
     list: {
       overflow: 'auto',
     },
-    // root: {
-    //   '& .MuiTextField-root': {
-    //     margin: theme.spacing(1),
-    //     width: '25ch',
-    //   },
-    // },
+    listItem: {
+    },
+    divider: {
+      height: 28,
+      margin: 4,
+    },
   }),
 );
 
@@ -37,20 +59,36 @@ export default function Roles() {
     event.preventDefault();
     const { elements } = event.target as HTMLFormElement;
     const { inputField }: any = elements;
-    const { value } = inputField;
-    dispatch(addRole(value));
+    const trimmedValue = (inputField as HTMLInputElement).value.trim();
+    if (trimmedValue.length) {
+      inputField.value = '';
+      dispatch(addRole(trimmedValue));
+    }
   };
 
   return (
     <div className={classes.root}>
-      <form noValidate autoComplete="off" onSubmit={handleAdd}>
-        <TextField name="inputField" label="Новая роль" type="search" variant="outlined" fullWidth />
+      <form className={classes.form} noValidate autoComplete="off" onSubmit={handleAdd}>
+        <TextField className={classes.roleInput} name="inputField" label="Новая роль" type="search" variant="outlined" fullWidth />
+        <Button
+          className={classes.addButton}
+          type="submit"
+          variant="contained"
+          color="primary"
+        >
+          <AddIcon />
+        </Button>
       </form>
-      <List className={classes.list}>
+      <List className={[classes.list, classes.marginTop].join(' ')}>
         {Object.entries(roles).map(([ id, { name }]: [string, Role]) => {
+          const handleRemove = () => dispatch(removeRole(id));
           return (
-            <ListItem key={id} dense button divider>
+            <ListItem key={id} className={classes.listItem} dense divider>
               <ListItemText primary={name} />
+              <Divider className={classes.divider} orientation="vertical" />
+              <IconButton color="primary" size="small" aria-label="remove" onClick={handleRemove}>
+                <DeleteIcon color="error" />
+              </IconButton>
             </ListItem>
           );
         })}
