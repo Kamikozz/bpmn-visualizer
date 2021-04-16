@@ -1,11 +1,15 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import rolesReducer from '../features/roles/rolesSlice';
+import actionsReducer from '../features/actions/actionsSlice';
+import roleActionMapReducer from '../features/roleActionMap/roleActionMapSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     roles: rolesReducer,
+    actions: actionsReducer,
+    roleActionMap: roleActionMapReducer,
   },
 });
 

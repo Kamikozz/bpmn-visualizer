@@ -24,13 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       margin: theme.spacing(1),
     },
-    marginTop: {
-      marginTop: theme.spacing(1),
-    },
     form: {
       display: 'flex',
-    },
-    roleInput: {
     },
     addButton: {
       marginLeft: theme.spacing(1),
@@ -39,9 +34,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 10,
     },
     list: {
+      marginTop: theme.spacing(1),
       overflow: 'auto',
-    },
-    listItem: {
     },
     divider: {
       height: 28,
@@ -69,7 +63,7 @@ export default function Roles() {
   return (
     <div className={classes.root}>
       <form className={classes.form} noValidate autoComplete="off" onSubmit={handleAdd}>
-        <TextField className={classes.roleInput} name="inputField" label="Новая роль" type="search" variant="outlined" fullWidth />
+        <TextField name="inputField" label="Новая роль" type="search" variant="outlined" fullWidth />
         <Button
           className={classes.addButton}
           type="submit"
@@ -79,11 +73,11 @@ export default function Roles() {
           <AddIcon />
         </Button>
       </form>
-      <List className={[classes.list, classes.marginTop].join(' ')}>
+      <List className={classes.list}>
         {Object.entries(roles).map(([ id, { name }]: [string, Role]) => {
           const handleRemove = () => dispatch(removeRole(id));
           return (
-            <ListItem key={id} className={classes.listItem} dense divider>
+            <ListItem key={id} dense divider>
               <ListItemText primary={name} />
               <Divider className={classes.divider} orientation="vertical" />
               <IconButton color="primary" size="small" aria-label="remove" onClick={handleRemove}>
