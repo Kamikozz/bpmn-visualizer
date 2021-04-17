@@ -3,6 +3,7 @@ import counterReducer from '../features/counter/counterSlice';
 import rolesReducer from '../features/roles/rolesSlice';
 import actionsReducer from '../features/actions/actionsSlice';
 import roleActionMapReducer from '../features/roleActionMap/roleActionMapSlice';
+import bpRelationsReducer from '../features/bpRelations/bpRelationsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     roles: rolesReducer,
     actions: actionsReducer,
     roleActionMap: roleActionMapReducer,
+    bpRelations: bpRelationsReducer,
   },
 });
 

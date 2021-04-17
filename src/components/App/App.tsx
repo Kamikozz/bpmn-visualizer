@@ -10,6 +10,7 @@ import Counter from '../Counter/Counter';
 import Swag from '../Swag/Swag';
 import Roles from '../Roles/Roles';
 import RoleActionMapper from '../RoleActionMapper/RoleActionMapper';
+import RelationsCreator from '../RelationsCreator/RelationsCreator';
 
 import styles from './App.module.css';
 
@@ -54,6 +55,7 @@ function App() {
 
               <Grid item xs={12} md={4} lg={3}>
                 <Paper className={classes.paper}>
+                  <RelationsCreator />
                 </Paper>
               </Grid>
 
