@@ -132,6 +132,12 @@ export default function RelationsCreator() {
               const relationToDisplayValue =
                 `${relationToRoleName} | ${relationToActionName}`;
 
+              // const roleActionMapEntriesArray = Object.entries(roleActionMap);
+
+              // const relationFromMenuItems = roleActionMapEntriesArray.map(() => {
+
+              // });
+
               const menuItems = Object
                 .entries(roleActionMap)
                 .map(([menuItemRoleActionId, { roleId, actionId }]) => {

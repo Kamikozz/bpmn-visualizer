@@ -11,6 +11,7 @@ import Swag from '../Swag/Swag';
 import Roles from '../Roles/Roles';
 import RoleActionMapper from '../RoleActionMapper/RoleActionMapper';
 import RelationsCreator from '../RelationsCreator/RelationsCreator';
+import Graph from '../Graph/Graph';
 
 import styles from './App.module.css';
 
@@ -27,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     height: 240,
   },
+  paperGraph: {
+    padding: theme.spacing(2),
+    minHeight: 240,
+  },
   paperSimulator: {
     height: 600,
   },
@@ -41,26 +46,27 @@ function App() {
         <Container className={classes.container} maxWidth={false}>
           <Grid className={classes.mainGrid} container direction="column" spacing={3}>
             <Grid className={classes.separateScreen} item container spacing={3}>
-              <Grid item xs={6} md={4} lg={2}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Paper className={classes.paper}>
                   <Roles />
                 </Paper>
               </Grid>
 
-              <Grid item xs={6} md={4} lg={3}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Paper className={classes.paper}>
                   <RoleActionMapper />
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} md={4} lg={3}>
+              <Grid item xs={12} md={4}>
                 <Paper className={classes.paper}>
                   <RelationsCreator />
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} md={12} lg={4}>
-                <Paper className={classes.paper}>
+              <Grid item xs={12}>
+                <Paper className={classes.paperGraph}>
+                  <Graph />
                 </Paper>
               </Grid>
             </Grid>

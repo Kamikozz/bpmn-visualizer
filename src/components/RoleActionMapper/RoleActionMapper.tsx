@@ -117,7 +117,7 @@ export default function RoleActionMapper() {
 
               return (
                 <ListItem key={id} className={classes.listItem} dense divider>
-                  <FormControl variant="outlined" size="small">
+                  <FormControl variant="outlined" size="small" fullWidth>
                     <Select
                       value={roleId}
                       MenuProps={MenuProps}
@@ -134,7 +134,7 @@ export default function RoleActionMapper() {
                       }
                     </Select>
                   </FormControl>
-                  <FormControl variant="outlined" size="small">
+                  <FormControl variant="outlined" size="small" fullWidth>
                     <Select
                       value={actionId}
                       MenuProps={MenuProps}

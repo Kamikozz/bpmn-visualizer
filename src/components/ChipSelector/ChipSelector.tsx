@@ -109,7 +109,7 @@ export default function ChipSelector(
         variant="outlined"
         onClick={handleOpen}
       />
-      <FormControl className={classes.formControl} size="small">
+      <FormControl className={classes.formControl} size="small" fullWidth>
         <Select
           value={selectedValue}
           MenuProps={MenuProps}
