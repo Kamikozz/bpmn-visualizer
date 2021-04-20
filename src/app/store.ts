@@ -4,6 +4,7 @@ import rolesReducer from '../features/roles/rolesSlice';
 import actionsReducer from '../features/actions/actionsSlice';
 import roleActionMapReducer from '../features/roleActionMap/roleActionMapSlice';
 import bpRelationsReducer from '../features/bpRelations/bpRelationsSlice';
+import messagesReducer from '../features/messages/messagesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     actions: actionsReducer,
     roleActionMap: roleActionMapReducer,
     bpRelations: bpRelationsReducer,
+    messages: messagesReducer,
   },
 });
 

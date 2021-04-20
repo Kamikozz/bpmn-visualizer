@@ -20,6 +20,7 @@ import RoleActionMapper from '../RoleActionMapper/RoleActionMapper';
 import RelationsCreator from '../RelationsCreator/RelationsCreator';
 import Graph from '../Graph/Graph';
 import PhoneSimulator from '../PhoneSimulator/PhoneSimulator';
+import Messages from '../Messages/Messages';
 
 import styles from './App.module.css';
 
@@ -38,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
   },
   paperGraph: {
     padding: theme.spacing(2),
-    minHeight: 240,
   },
   paperSimulator: {
     padding: theme.spacing(2),
@@ -90,6 +90,12 @@ function App() {
               <Grid item xs={12}>
                 <Paper className={classes.paperGraph}>
                   <Graph />
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <Messages />
                 </Paper>
               </Grid>
             </Grid>
