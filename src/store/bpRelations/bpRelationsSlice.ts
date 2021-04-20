@@ -6,7 +6,11 @@ export interface BPRelation {
   id: string;
   relation: Array<string>;
 };
-export interface BPRelationsState extends Record<string, BPRelation> {};
+
+export interface BPRelationsState {
+  items: Record<string, BPRelation>;
+  startNode: string | null;
+};
 
 export const createNewRelation = (relation: Array<string>): BPRelation => {
   return {
@@ -15,7 +19,10 @@ export const createNewRelation = (relation: Array<string>): BPRelation => {
   };
 };
 
-const initialState: BPRelationsState = {};
+const initialState: BPRelationsState = {
+  items: {},
+  startNode: null,
+};
 
 export const bpRelationsSlice = createSlice({
   name: 'bpRelations',
@@ -23,10 +30,10 @@ export const bpRelationsSlice = createSlice({
   reducers: {
     addBPRelation: (state, action: PayloadAction<Array<string>>) => {
       const bpRelation = createNewRelation(action.payload);
-      state[bpRelation.id] = bpRelation;
+      state.items[bpRelation.id] = bpRelation;
     },
     removeBPRelation: (state, action: PayloadAction<string>) => {
-      delete state[action.payload];
+      delete state.items[action.payload];
     },
     changeBPRelation: (state, action: PayloadAction<{
       id: string;
@@ -34,14 +41,30 @@ export const bpRelationsSlice = createSlice({
       to?: string;
     }>) => {
       const { id, from, to } = action.payload;
-      const [oldFrom, oldTo] = state[id].relation;
-      if (from) state[id].relation = [from, oldTo];
-      if (to) state[id].relation = [oldFrom, to];
+      const [oldFrom, oldTo] = state.items[id].relation;
+      if (from) state.items[id].relation = [from, oldTo];
+      if (to) state.items[id].relation = [oldFrom, to];
+    },
+    findEntryNode: (state) => {
+      const items = Object.values(state.items);
+      const nodesFrom: Array<string> = [];
+      const nodesTo: Array<string> = [];
+      items.forEach(({ relation: [relFrom, relTo] }) => {
+        nodesFrom.push(relFrom);
+        nodesTo.push(relTo);
+      });
+      state.startNode = nodesFrom.find((node) => !nodesTo.includes(node)) || null;
     },
   },
 });
 
-export const { addBPRelation, removeBPRelation, changeBPRelation } = bpRelationsSlice.actions;
-export const selectBPRelations = (state: RootState) => state.bpRelations;
+export const {
+  addBPRelation,
+  removeBPRelation,
+  changeBPRelation,
+  findEntryNode,
+} = bpRelationsSlice.actions;
+export const selectStartBPRelation = (state: RootState) => state.bpRelations.startNode;
+export const selectBPRelations = (state: RootState) => state.bpRelations.items;
 
 export default bpRelationsSlice.reducer;

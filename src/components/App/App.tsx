@@ -10,7 +10,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
-// import { selectBPRelations } from '../../features/bpRelations/bpRelationsSlice';
+import { findEntryNode, selectStartBPRelation } from '../../store/bpRelations/bpRelationsSlice';
+import { selectMessages } from '../../store/messages/messagesSlice';
 
 import logo from '../../assets/logo.svg';
 import Counter from '../Counter/Counter';
@@ -56,11 +57,16 @@ function App() {
   const roles = useAppSelector(selectRoles);
   const actions = useAppSelector(selectActions);
   const roleActionMap = useAppSelector(selectRoleActionMap);
+  const bpEntryNodeId = useAppSelector(selectStartBPRelation);
+  const messages = useAppSelector(selectMessages);
+  const dispatch = useAppDispatch();
 
   const [phonesVisible, setPhonesVisible] = useState(false);
 
   const handleClick = () => {
     setPhonesVisible(true);
+    // console.log(bpEntryNodeId);
+    dispatch(findEntryNode());
   };
 
   return (
@@ -101,7 +107,7 @@ function App() {
             </Grid>
 
             {
-              phonesVisible && (
+              phonesVisible && bpEntryNodeId && (
                 <Grid item container spacing={3}>
                   {
                     Object
@@ -116,6 +122,9 @@ function App() {
                               id: roleActionRelationId,
                               actionId,
                               actionName,
+                              messages: bpEntryNodeId === roleActionRelationId
+                                ? Object.keys(messages).length
+                                : null,
                             };
                           });
                         return (
