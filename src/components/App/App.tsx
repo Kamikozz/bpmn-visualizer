@@ -8,8 +8,8 @@ import Fab from '@material-ui/core/Fab';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectRoles } from '../../features/roles/rolesSlice';
-// import { selectActions } from '../../features/actions/actionsSlice';
-// import { selectRoleActionMap } from '../../features/roleActionMap/roleActionMapSlice';
+import { selectActions } from '../../features/actions/actionsSlice';
+import { selectRoleActionMap } from '../../features/roleActionMap/roleActionMapSlice';
 // import { selectBPRelations } from '../../features/bpRelations/bpRelationsSlice';
 
 import logo from '../../assets/logo.svg';
@@ -19,6 +19,7 @@ import Roles from '../Roles/Roles';
 import RoleActionMapper from '../RoleActionMapper/RoleActionMapper';
 import RelationsCreator from '../RelationsCreator/RelationsCreator';
 import Graph from '../Graph/Graph';
+import PhoneSimulator from '../PhoneSimulator/PhoneSimulator';
 
 import styles from './App.module.css';
 
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 240,
   },
   paperSimulator: {
+    padding: theme.spacing(2),
     height: 600,
   },
   fab: {
@@ -52,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const roles = useAppSelector(selectRoles);
+  const actions = useAppSelector(selectActions);
+  const roleActionMap = useAppSelector(selectRoleActionMap);
 
   const [phonesVisible, setPhonesVisible] = useState(false);
 
@@ -94,14 +98,27 @@ function App() {
               phonesVisible && (
                 <Grid item container spacing={3}>
                   {
-                    Object.entries(roles).map(([roleId, { name }]) => {
-                      return (
-                        <Grid key={roleId} item xs={6}>
-                          <Paper className={classes.paperSimulator}>
-                            <div>{name}</div>
-                          </Paper>
-                        </Grid>
-                      );
+                    Object
+                      .entries(roles)
+                      .map(([roleId, { name }]) => {
+                        const currentRoleActions = Object
+                          .values(roleActionMap)
+                          .filter(({ roleId: innerRoleId }) => innerRoleId === roleId)
+                          .map(({ id: roleActionRelationId, actionId }) => {
+                            const { name: actionName } = actions[actionId];
+                            return {
+                              id: roleActionRelationId,
+                              actionId,
+                              actionName,
+                            };
+                          });
+                        return (
+                          <Grid key={roleId} item xs={6}>
+                            <Paper className={classes.paperSimulator}>
+                              <PhoneSimulator roleName={name} roleActions={currentRoleActions} />
+                            </Paper>
+                          </Grid>
+                        );
                     })
                   }
                 </Grid>
