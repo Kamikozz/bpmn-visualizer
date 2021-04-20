@@ -15,10 +15,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectRoles, Role } from '../../features/roles/rolesSlice';
-import { selectActions, Action } from '../../features/actions/actionsSlice';
-import { addRelation, removeRelation, changeRelation, selectRoleActionMap, RoleActionRelation } from '../../features/roleActionMap/roleActionMapSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { selectRoles, Role } from '../../store/roles/rolesSlice';
+import { selectActions, Action } from '../../store/actions/actionsSlice';
+import { addRelation, removeRelation, changeRelation, selectRoleActionMap, RoleActionRelation } from '../../store/roleActionMap/roleActionMapSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -11,8 +11,8 @@ import Divider from '@material-ui/core/Divider';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { addMessage, removeMessage, selectMessages, Message } from '../../features/messages/messagesSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addMessage, removeMessage, selectMessages, Message } from '../../store/messages/messagesSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

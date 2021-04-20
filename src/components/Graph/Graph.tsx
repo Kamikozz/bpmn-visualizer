@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { useAppSelector } from '../../app/hooks';
-import { selectRoles } from '../../features/roles/rolesSlice';
-import { selectActions } from '../../features/actions/actionsSlice';
-import { selectRoleActionMap } from '../../features/roleActionMap/roleActionMapSlice';
-import { selectBPRelations } from '../../features/bpRelations/bpRelationsSlice';
+import { useAppSelector } from '../../store/hooks';
+import { selectRoles } from '../../store/roles/rolesSlice';
+import { selectActions } from '../../store/actions/actionsSlice';
+import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
+import { selectBPRelations } from '../../store/bpRelations/bpRelationsSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

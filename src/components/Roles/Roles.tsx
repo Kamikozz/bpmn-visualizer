@@ -11,8 +11,8 @@ import Divider from '@material-ui/core/Divider';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { addRole, removeRole, selectRoles, Role } from '../../features/roles/rolesSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addRole, removeRole, selectRoles, Role } from '../../store/roles/rolesSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

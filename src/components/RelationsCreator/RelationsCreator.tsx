@@ -10,12 +10,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import ArrowRightAltRounded from '@material-ui/icons/ArrowRightAltRounded';
 
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectRoles } from '../../features/roles/rolesSlice';
-import { selectActions } from '../../features/actions/actionsSlice';
-import { selectRoleActionMap } from '../../features/roleActionMap/roleActionMapSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { selectRoles } from '../../store/roles/rolesSlice';
+import { selectActions } from '../../store/actions/actionsSlice';
+import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
 import ChipSelector from '../ChipSelector/ChipSelector';
-import { addBPRelation, changeBPRelation, removeBPRelation, selectBPRelations, BPRelation } from '../../features/bpRelations/bpRelationsSlice';
+import { addBPRelation, changeBPRelation, removeBPRelation, selectBPRelations, BPRelation } from '../../store/bpRelations/bpRelationsSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

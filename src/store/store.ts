@@ -1,10 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
-import rolesReducer from '../features/roles/rolesSlice';
-import actionsReducer from '../features/actions/actionsSlice';
-import roleActionMapReducer from '../features/roleActionMap/roleActionMapSlice';
-import bpRelationsReducer from '../features/bpRelations/bpRelationsSlice';
-import messagesReducer from '../features/messages/messagesSlice';
+import counterReducer from './counter/counterSlice';
+import rolesReducer from './roles/rolesSlice';
+import actionsReducer from './actions/actionsSlice';
+import roleActionMapReducer from './roleActionMap/roleActionMapSlice';
+import bpRelationsReducer from './bpRelations/bpRelationsSlice';
+import messagesReducer from './messages/messagesSlice';
 
 export const store = configureStore({
   reducer: {
