@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Fab from '@material-ui/core/Fab';
+
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectRoles } from '../../features/roles/rolesSlice';
+// import { selectActions } from '../../features/actions/actionsSlice';
+// import { selectRoleActionMap } from '../../features/roleActionMap/roleActionMapSlice';
+// import { selectBPRelations } from '../../features/bpRelations/bpRelationsSlice';
 
 import logo from '../../assets/logo.svg';
 import Counter from '../Counter/Counter';
@@ -35,10 +42,22 @@ const useStyles = makeStyles((theme) => ({
   paperSimulator: {
     height: 600,
   },
+  fab: {
+    position: 'fixed',
+    right: 30,
+    bottom: 15,
+  },
 }));
 
 function App() {
   const classes = useStyles();
+  const roles = useAppSelector(selectRoles);
+
+  const [phonesVisible, setPhonesVisible] = useState(false);
+
+  const handleClick = () => {
+    setPhonesVisible(true);
+  };
 
   return (
     <div className={styles.root}>
@@ -71,18 +90,35 @@ function App() {
               </Grid>
             </Grid>
 
-            <Grid item container spacing={3}>
-              <Grid item xs={6}>
-                <Paper className={classes.paperSimulator}>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Paper className={classes.paperSimulator}>
-                </Paper>
-              </Grid>
-            </Grid>
+            {
+              phonesVisible && (
+                <Grid item container spacing={3}>
+                  {
+                    Object.entries(roles).map(([roleId, { name }]) => {
+                      return (
+                        <Grid key={roleId} item xs={6}>
+                          <Paper className={classes.paperSimulator}>
+                            <div>{name}</div>
+                          </Paper>
+                        </Grid>
+                      );
+                    })
+                  }
+                </Grid>
+              )
+            }
           </Grid>
+
+          <Fab
+            className={classes.fab}
+            variant="extended"
+            size="medium"
+            color="primary"
+            aria-label="generate"
+            onClick={handleClick}
+          >
+            Сгенерировать
+          </Fab>
         </Container>
       </main>
     </div>
