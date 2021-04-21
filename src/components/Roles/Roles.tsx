@@ -49,21 +49,32 @@ export default function Roles() {
   const roles = useAppSelector(selectRoles);
   const dispatch = useAppDispatch();
 
+  const [inputValue, setInputValue] = useState('');
+
   const handleAdd = (event: FormEvent) => {
     event.preventDefault();
-    const { elements } = event.target as HTMLFormElement;
-    const { inputField }: any = elements;
-    const trimmedValue = (inputField as HTMLInputElement).value.trim();
-    if (trimmedValue.length) {
-      inputField.value = '';
-      dispatch(addRole(trimmedValue));
+    if (inputValue.length) {
+      setInputValue('');
+      dispatch(addRole(inputValue));
     }
+  };
+
+  const handleChange = (event: any) => {
+    const value: string = event.target.value;
+    setInputValue(value.trim());
   };
 
   return (
     <div className={classes.root}>
       <form className={classes.form} noValidate autoComplete="off" onSubmit={handleAdd}>
-        <TextField name="inputField" label="Новая роль" type="search" variant="outlined" fullWidth />
+        <TextField
+          value={inputValue}
+          label="Новая роль"
+          type="search"
+          variant="outlined"
+          fullWidth
+          onChange={handleChange}
+        />
         <Button
           className={classes.addButton}
           type="submit"
