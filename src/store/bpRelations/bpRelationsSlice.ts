@@ -6,9 +6,9 @@ export interface BPRelation {
   id: string;
   relation: Array<string>;
 };
-
+export interface BPRelations extends Record<string, BPRelation> {};
 export interface BPRelationsState {
-  items: Record<string, BPRelation>;
+  items: BPRelations;
   startNode: string | null;
 };
 

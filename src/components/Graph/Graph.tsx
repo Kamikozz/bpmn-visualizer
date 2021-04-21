@@ -59,18 +59,47 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function RelationsCreator() {
+const BusinessProcesses = ({ roleId, refs }: {
+  roleId: string;
+  refs: any;
+}) => {
   const classes = useStyles();
-  const roles = useAppSelector(selectRoles);
   const actions = useAppSelector(selectActions);
   const roleActionMap = useAppSelector(selectRoleActionMap);
-  const bpRelations = useAppSelector(selectBPRelations);
-
-  const itemsRef = useRef<any>({});
-
-  const rolesArrayIds = Object.keys(roles);
   const roleActionMapArrayIds = Object.keys(roleActionMap);
+  return (
+    <div className={classes.processesContainer}>
+    {
+      roleActionMapArrayIds.map((roleActionRelationId) => {
+        const handleRef = (el: HTMLDivElement) => refs.current[roleActionRelationId] = el;
+        const roleActionRelation = roleActionMap[roleActionRelationId];
+        const { actionId, roleId: relationRoleId } = roleActionRelation;
+        if (roleId === relationRoleId) {
+          const { name: actionName } = actions[actionId];
+          return (
+            <div
+              key={roleActionRelationId}
+              ref={handleRef}
+              className={classes.process}
+            >{actionName}</div>
+          );
+        }
+        return undefined;
+      })
+    }
+    </div>
+  );
+};
+
+const BusinessProcessesRelations = ({ refs }: {
+  refs: any;
+}) => {
+  const classes = useStyles();
+  const bpRelations = useAppSelector(selectBPRelations);
   const bpRelationsArrayIds = Object.keys(bpRelations);
+
+  const markerWidth = 7;
+  const markerHeight = 7;
 
   const getPointCenterCoords = (element: any) => {
     const { offsetLeft, offsetWidth, offsetTop, offsetHeight } = element;
@@ -80,6 +109,63 @@ export default function RelationsCreator() {
   };
 
   return (
+    <>
+    {
+      bpRelationsArrayIds
+        .map((bpRelationId) => {
+          const [relationFromId, relationToId] = bpRelations[bpRelationId].relation;
+
+          const relationFromEl = refs.current[relationFromId];
+          const relationToEl = refs.current[relationToId];
+
+          const [centerX, centerY] = getPointCenterCoords(relationFromEl);
+          const [centerToX, centerToY] = getPointCenterCoords(relationToEl);
+
+          const width = Math.max(centerX, centerToX) + markerWidth;
+          const height = Math.max(centerY, centerToY) + markerHeight;
+
+          const pointsPolyline = [
+            `${centerX},${centerY}`,
+            `${(centerX + centerToX) / 2},${(centerY + centerToY) / 2}`,
+            `${centerToX},${centerToY}`
+          ].join(' ');
+
+          return (
+            <svg
+              key={bpRelationId}
+              className={classes.svg}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox={`0 0 ${width} ${height}`}
+              width={width}
+              height={height}
+            >
+              <defs>
+                <marker id="arrowhead" viewBox="0 0 10 10" refX="3" refY="5"
+                markerWidth={markerWidth} markerHeight={markerHeight} orient="auto">
+                  <path fill="white" stroke="black" d="M 0 0 L 10 5 L 0 10 z" />
+                </marker>
+              </defs>
+              <g fill="none" stroke="black" strokeWidth="2" markerMid="url(#arrowhead)">
+                <polyline points={pointsPolyline} // d={`M ${centerX},${centerY} L ${centerToX},${centerToY}`}
+                />
+              </g>
+            </svg>
+          );
+        })
+    }
+    </>
+  );
+};
+
+export default function Graph() {
+  const classes = useStyles();
+  const roles = useAppSelector(selectRoles);
+
+  const refs = useRef<any>({});
+
+  const rolesArrayIds = Object.keys(roles);
+
+  return (
     <div className={classes.root}>
       {
         rolesArrayIds.map((roleId) => {
@@ -87,75 +173,12 @@ export default function RelationsCreator() {
           return (
             <div key={roleId} className={classes.workspace}>
               <div className={classes.role}>{roleName}</div>
-              <div className={classes.processesContainer}>
-                {
-                  roleActionMapArrayIds.map((roleActionRelationId) => {
-                    const roleActionRelation = roleActionMap[roleActionRelationId];
-                    const { actionId, roleId: relationRoleId } = roleActionRelation;
-                    if (roleId === relationRoleId) {
-                      const { name: actionName } = actions[actionId];
-                      return (
-                        <div
-                          key={roleActionRelationId}
-                          ref={(el) => itemsRef.current[roleActionRelationId] = el}
-                          className={classes.process}
-                        >{actionName}</div>
-                      );
-                    }
-                    return undefined;
-                  })
-                }
-              </div>
+              <BusinessProcesses roleId={roleId} refs={refs} />
             </div>
           );
         })
       }
-      {
-        bpRelationsArrayIds
-          .map((bpRelationId) => {
-            const [relationFromId, relationToId] = bpRelations[bpRelationId].relation;
-
-            const relationFromEl = itemsRef.current[relationFromId];
-            const relationToEl = itemsRef.current[relationToId];
-
-            const [centerX, centerY] = getPointCenterCoords(relationFromEl);
-            const [centerToX, centerToY] = getPointCenterCoords(relationToEl);
-
-            const markerWidth = 7;
-            const markerHeight = 7;
-
-            const width = Math.max(centerX, centerToX) + markerWidth;
-            const height = Math.max(centerY, centerToY) + markerHeight;
-
-            const pointsPolyline = [
-              `${centerX},${centerY}`,
-              `${(centerX + centerToX) / 2},${(centerY + centerToY) / 2}`,
-              `${centerToX},${centerToY}`
-            ].join(' ');
-
-            return (
-              <svg
-                key={bpRelationId}
-                className={classes.svg}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox={`0 0 ${width} ${height}`}
-                width={width}
-                height={height}
-              >
-                <defs>
-                  <marker id="arrowhead" viewBox="0 0 10 10" refX="3" refY="5"
-                  markerWidth={markerWidth} markerHeight={markerHeight} orient="auto">
-                    <path fill="white" stroke="black" d="M 0 0 L 10 5 L 0 10 z" />
-                  </marker>
-                </defs>
-                <g fill="none" stroke="black" strokeWidth="2" markerMid="url(#arrowhead)">
-                  <polyline points={pointsPolyline} // d={`M ${centerX},${centerY} L ${centerToX},${centerToY}`}
-                  />
-                </g>
-              </svg>
-            );
-          })
-      }
+      <BusinessProcessesRelations refs={refs} />
     </div>
   );
 }

@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function Messages() {
+export default function MessagesList() {
   const classes = useStyles();
   const messages = useAppSelector(selectMessages);
   const dispatch = useAppDispatch();

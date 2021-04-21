@@ -61,8 +61,9 @@ function App() {
   const messages = useAppSelector(selectMessages);
   const dispatch = useAppDispatch();
 
-  const [isGenerated, setIsGenerated] = useState(false);
+  const rolesEntries = Object.entries(roles);
 
+  const [isGenerated, setIsGenerated] = useState(false);
   const phonesVisible = isGenerated && Boolean(bpEntryNodeId);
 
   // const [phonesVisible, setPhonesVisible] = useState(false);
@@ -96,12 +97,15 @@ function App() {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12}>
-                <Paper className={classes.paperGraph}>
-                  <Graph />
-                </Paper>
-              </Grid>
-
+              {
+                Boolean(rolesEntries.length) && (
+                  <Grid item xs={12}>
+                    <Paper className={classes.paperGraph}>
+                      <Graph />
+                    </Paper>
+                  </Grid>
+                )
+              }
               {
                 phonesVisible && (
                   <Grid item xs={12}>

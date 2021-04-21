@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function Messages() {
+export default function MessagesInput() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
 
