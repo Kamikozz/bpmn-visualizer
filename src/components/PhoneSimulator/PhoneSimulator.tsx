@@ -1,5 +1,3 @@
-import React, { useState, useRef, useEffect } from 'react';
-
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -29,10 +27,6 @@ interface PhoneSimulatorProps {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-    },
-    colorPrimary: {
-      color: '#333333',
-      backgroundColor: '',
     },
     toolbar: {
       display: 'flex',

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useRef } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -102,6 +102,7 @@ export default function RelationsCreator() {
                         >{actionName}</div>
                       );
                     }
+                    return undefined;
                   })
                 }
               </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -13,15 +13,12 @@ import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlic
 import { findEntryNode, selectStartBPRelation } from '../../store/bpRelations/bpRelationsSlice';
 import { selectMessages } from '../../store/messages/messagesSlice';
 
-import logo from '../../assets/logo.svg';
-import Counter from '../Counter/Counter';
-import Swag from '../Swag/Swag';
 import Roles from '../Roles/Roles';
 import RoleActionMapper from '../RoleActionMapper/RoleActionMapper';
 import RelationsCreator from '../RelationsCreator/RelationsCreator';
 import Graph from '../Graph/Graph';
 import PhoneSimulator from '../PhoneSimulator/PhoneSimulator';
-import Messages from '../Messages/Messages';
+import Messages from '../MessagesInput/MessagesInput';
 
 import styles from './App.module.css';
 
@@ -37,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     height: 240,
+  },
+  paperMessagesInput: {
+    padding: theme.spacing(2),
   },
   paperGraph: {
     padding: theme.spacing(2),
@@ -65,7 +65,6 @@ function App() {
 
   const handleClick = () => {
     setPhonesVisible(true);
-    // console.log(bpEntryNodeId);
     dispatch(findEntryNode());
   };
 
@@ -100,7 +99,7 @@ function App() {
               </Grid>
 
               <Grid item xs={12}>
-                <Paper className={classes.paper}>
+                <Paper className={classes.paperMessagesInput}>
                   <Messages />
                 </Paper>
               </Grid>

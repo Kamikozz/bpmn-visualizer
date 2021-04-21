@@ -1,4 +1,4 @@
-import React, { FormEvent, Fragment, useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -21,17 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       height: '100%',
     },
-    margin: {
-      margin: theme.spacing(1),
-    },
     form: {
       display: 'flex',
     },
     addButton: {
       marginLeft: theme.spacing(1),
-    },
-    iconButton: {
-      padding: 10,
     },
     list: {
       marginTop: theme.spacing(1),

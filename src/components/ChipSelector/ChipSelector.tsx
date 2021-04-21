@@ -1,4 +1,4 @@
-import React, { FormEvent, Fragment, useState } from 'react';
+import { useState, ChangeEvent, ReactNode } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -12,10 +12,10 @@ import Chip from '@material-ui/core/Chip';
 // import { addRelation, removeRelation, changeRelation, selectRoleActionMap, RoleActionRelation } from '../../features/roleActionMap/roleActionMapSlice';
 
 type ChipSelectorProps = {
-  onChange: ((event: React.ChangeEvent<{
+  onChange: ((event: ChangeEvent<{
       name?: string | undefined;
       value: unknown;
-  }>, child: React.ReactNode) => void) | undefined;
+  }>, child: ReactNode) => void) | undefined;
   menuItems: Array<Array<string>>;
   displayValue: string;
   selectedValue: string;
@@ -28,9 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-    },
-    margin: {
-      margin: theme.spacing(1),
     },
     form: {
       display: 'flex',

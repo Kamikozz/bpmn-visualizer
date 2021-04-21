@@ -1,24 +1,25 @@
-import React, { FormEvent, Fragment, useState } from 'react';
-
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectRoles, Role } from '../../store/roles/rolesSlice';
-import { selectActions, Action } from '../../store/actions/actionsSlice';
-import { addRelation, removeRelation, changeRelation, selectRoleActionMap, RoleActionRelation } from '../../store/roleActionMap/roleActionMapSlice';
+import { selectRoles } from '../../store/roles/rolesSlice';
+import { selectActions } from '../../store/actions/actionsSlice';
+import {
+  addRelation,
+  removeRelation,
+  changeRelation,
+  selectRoleActionMap,
+  RoleActionRelation,
+} from '../../store/roleActionMap/roleActionMapSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,28 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       height: '100%',
     },
-    margin: {
-      margin: theme.spacing(1),
-    },
-    form: {
-      display: 'flex',
-    },
-    roleInput: {
-    },
-    addButton: {
-      marginLeft: theme.spacing(1),
-    },
-    iconButton: {
-      padding: 10,
-    },
     list: {
       marginTop: theme.spacing(1),
       overflow: 'auto',
     },
     listItem: {
-    },
-    select: {
-      maxHeight: 300,
     },
     divider: {
       height: 28,

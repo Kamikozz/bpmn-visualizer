@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -15,7 +13,13 @@ import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
 import ChipSelector from '../ChipSelector/ChipSelector';
-import { addBPRelation, changeBPRelation, removeBPRelation, selectBPRelations, BPRelation } from '../../store/bpRelations/bpRelationsSlice';
+import {
+  addBPRelation,
+  changeBPRelation,
+  removeBPRelation,
+  selectBPRelations,
+  BPRelation,
+} from '../../store/bpRelations/bpRelationsSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,45 +28,15 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       height: '100%',
     },
-    margin: {
-      margin: theme.spacing(1),
-    },
-    form: {
-      display: 'flex',
-    },
-    roleInput: {
-    },
-    addButton: {
-      marginLeft: theme.spacing(1),
-    },
-    iconButton: {
-      padding: 10,
-    },
     list: {
       marginTop: theme.spacing(1),
       overflow: 'auto',
     },
     listItem: {
     },
-    select: {
-      maxHeight: 300,
-    },
-    chip: {
-      maxWidth: '100%',
-    },
     divider: {
       height: 28,
       margin: 4,
-    },
-    formControlContainer: {
-      position: 'relative',
-      maxWidth: '50%',
-      overflow: 'hidden',
-    },
-    formControl: {
-      position: 'absolute',
-      left: '0',
-      visibility: 'hidden',
     },
   }),
 );
