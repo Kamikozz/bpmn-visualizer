@@ -49,13 +49,13 @@ export default function Roles() {
     event.preventDefault();
     if (inputValue.length) {
       setInputValue('');
-      dispatch(addRole(inputValue));
+      dispatch(addRole(inputValue.trim()));
     }
   };
 
   const handleChange = (event: any) => {
     const value: string = event.target.value;
-    setInputValue(value.trim());
+    setInputValue(value);
   };
 
   return (

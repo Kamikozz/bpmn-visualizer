@@ -34,13 +34,13 @@ export default function Messages() {
     event.preventDefault();
     if (inputValue.length) {
       setInputValue('');
-      dispatch(addMessage(inputValue));
+      dispatch(addMessage(inputValue.trim()));
     }
   };
 
   const handleChange = (event: any) => {
     const value: string = event.target.value;
-    setInputValue(value.trim());
+    setInputValue(value);
   };
 
   return (
