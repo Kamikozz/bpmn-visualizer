@@ -65,7 +65,7 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
                 <ListItemText primary={actionName} />
                 {
                   messages !== null  && (
-                    <Badge className={classes.badge} badgeContent={messages} color="primary"></Badge>
+                    <Badge className={classes.badge} badgeContent={messages} color="primary" />
                   )
                 }
               </ListItem>

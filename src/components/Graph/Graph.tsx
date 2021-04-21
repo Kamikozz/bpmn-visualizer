@@ -160,16 +160,25 @@ const BusinessProcessesRelations = ({ refs }: {
 export default function Graph() {
   const classes = useStyles();
   const roles = useAppSelector(selectRoles);
+  const roleActionMap = useAppSelector(selectRoleActionMap);
 
   const refs = useRef<any>({});
 
   const rolesArrayIds = Object.keys(roles);
+  const roleActionMapEntries = Object.values(roleActionMap);
+  const rolesWithActionsMap: Record<string, boolean> = roleActionMapEntries
+    .reduce((accumulator: Record<string, boolean>, { roleId }) => {
+      accumulator[roleId] = true;
+      return accumulator;
+  }, {});
 
   return (
     <div className={classes.root}>
       {
         rolesArrayIds.map((roleId) => {
           const { name: roleName } = roles[roleId];
+          const roleHasActions = rolesWithActionsMap[roleId];
+          if (!roleHasActions) return undefined;
           return (
             <div key={roleId} className={classes.workspace}>
               <div className={classes.role}>{roleName}</div>

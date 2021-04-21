@@ -61,7 +61,16 @@ function App() {
   const messages = useAppSelector(selectMessages);
   const dispatch = useAppDispatch();
 
-  const rolesEntries = Object.entries(roles);
+  const roleActionMapEntries = Object.values(roleActionMap);
+
+  const rolesWithActionsMap: Record<string, boolean> = roleActionMapEntries
+    .reduce((accumulator: Record<string, boolean>, { roleId }) => {
+      accumulator[roleId] = true;
+      return accumulator;
+  }, {});
+
+  const hasAnyRole = Boolean(Object.keys(roles).length);
+  const hasAnyRoleActionPair = Boolean(roleActionMapEntries.length);
 
   const [isGenerated, setIsGenerated] = useState(false);
   const phonesVisible = isGenerated && Boolean(bpEntryNodeId);
@@ -98,7 +107,7 @@ function App() {
               </Grid>
 
               {
-                Boolean(rolesEntries.length) && (
+                hasAnyRole && hasAnyRoleActionPair && (
                   <Grid item xs={12}>
                     <Paper className={classes.paperGraph}>
                       <Graph />
@@ -124,8 +133,10 @@ function App() {
                     Object
                       .entries(roles)
                       .map(([roleId, { name }]) => {
-                        const currentRoleActions = Object
-                          .values(roleActionMap)
+                        const roleHasActions = rolesWithActionsMap[roleId];
+                        if (!roleHasActions) return undefined;
+
+                        const currentRoleActions = roleActionMapEntries
                           .filter(({ roleId: innerRoleId }) => innerRoleId === roleId)
                           .map(({ id: roleActionRelationId, actionId }) => {
                             const { name: actionName } = actions[actionId];
