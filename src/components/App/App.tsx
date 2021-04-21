@@ -61,10 +61,14 @@ function App() {
   const messages = useAppSelector(selectMessages);
   const dispatch = useAppDispatch();
 
-  const [phonesVisible, setPhonesVisible] = useState(false);
+  const [isGenerated, setIsGenerated] = useState(false);
+
+  const phonesVisible = isGenerated && Boolean(bpEntryNodeId);
+
+  // const [phonesVisible, setPhonesVisible] = useState(false);
 
   const handleClick = () => {
-    setPhonesVisible(true);
+    setIsGenerated(true);
     dispatch(findEntryNode());
   };
 
@@ -98,15 +102,19 @@ function App() {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12}>
-                <Paper className={classes.paperMessagesInput}>
-                  <Messages />
-                </Paper>
-              </Grid>
+              {
+                phonesVisible && (
+                  <Grid item xs={12}>
+                    <Paper className={classes.paperMessagesInput}>
+                      <Messages />
+                    </Paper>
+                  </Grid>
+                )
+              }
             </Grid>
 
             {
-              phonesVisible && bpEntryNodeId && (
+              phonesVisible && (
                 <Grid item container spacing={3}>
                   {
                     Object

@@ -34,7 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listItem: {
       border: '1px solid black',
-    }
+    },
+    badge: {
+      zIndex: 0,
+    },
   }),
 );
 
@@ -62,7 +65,7 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
                 <ListItemText primary={actionName} />
                 {
                   messages !== null  && (
-                    <Badge badgeContent={messages} color="primary"></Badge>
+                    <Badge className={classes.badge} badgeContent={messages} color="primary"></Badge>
                   )
                 }
               </ListItem>
