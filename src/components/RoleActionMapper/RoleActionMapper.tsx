@@ -64,11 +64,22 @@ export default function RoleActionMapper() {
   const roleActionMap = useAppSelector(selectRoleActionMap);
   const dispatch = useAppDispatch();
 
+  const rolesEntries = Object.entries(roles);
+  const actionsEntries = Object.entries(actions);
+
+  const hasRoleActionPair = Boolean(rolesEntries.length && actionsEntries.length);
+
   const handleAdd = () => {
-    dispatch(addRelation({
-      roleId: 'role0',
-      actionId: 'action0',
-    }));
+    console.log(roles, actions);
+    const [[ roleId ]] = rolesEntries;
+    const [[ actionId ]] = actionsEntries;
+
+    if (hasRoleActionPair) {
+      dispatch(addRelation({
+        roleId,
+        actionId,
+      }));
+    }
   };
 
   const MenuProps = {
@@ -86,6 +97,7 @@ export default function RoleActionMapper() {
         color="primary"
         size="small"
         startIcon={<AddIcon />}
+        disabled={!hasRoleActionPair}
         onClick={handleAdd}
       >
         Добавить пару 'Роль-Функция'
