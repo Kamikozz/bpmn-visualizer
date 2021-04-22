@@ -1,15 +1,13 @@
 import { FormEvent, useState } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
+import {
+  TextField, List, ListItem, ListItemText, Button, IconButton, Divider,
+} from '@material-ui/core';
+import {
+  Delete as DeleteIcon,
+  Add as AddIcon,
+} from '@material-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addRole, removeRole, selectRoles, Role } from '../../store/roles/rolesSlice';

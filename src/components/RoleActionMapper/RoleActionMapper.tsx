@@ -1,14 +1,11 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import {
+  List, ListItem, Button, IconButton, Divider, FormControl, Select, MenuItem,
+} from '@material-ui/core';
+import {
+  Delete as DeleteIcon,
+  Add as AddIcon,
+} from '@material-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectRoles } from '../../store/roles/rolesSlice';

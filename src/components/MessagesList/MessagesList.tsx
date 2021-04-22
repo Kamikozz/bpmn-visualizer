@@ -1,10 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {
+  List, ListItem, ListItemText, IconButton, Divider,
+  Grow, // animations
+} from '@material-ui/core';
+import { Delete as DeleteIcon } from '@material-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { removeMessage, selectMessages, Message } from '../../store/messages/messagesSlice';
@@ -27,7 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function MessagesList() {
+export default function MessagesList({ onClick }: {
+  onClick: any
+}) {
   const classes = useStyles();
   const messages = useAppSelector(selectMessages);
   const dispatch = useAppDispatch();
@@ -35,18 +36,27 @@ export default function MessagesList() {
   return (
     <div className={classes.root}>
       <List className={classes.list}>
-        {Object.entries(messages).map(([ id, { message }]: [string, Message]) => {
-          const handleRemove = () => dispatch(removeMessage(id));
-          return (
-            <ListItem key={id} dense divider>
-              <ListItemText primary={message} />
-              <Divider className={classes.divider} orientation="vertical" />
-              <IconButton color="primary" size="small" aria-label="remove" onClick={handleRemove}>
-                <DeleteIcon color="error" />
-              </IconButton>
-            </ListItem>
-          );
-        })}
+        {
+          Object
+            .entries(messages)
+            .map(([ id, message]: [string, Message], index) => {
+            const handleRemove = () => dispatch(removeMessage(id));
+            const handleSelected = () => {
+              onClick(message);
+            };
+            return (
+              <Grow key={id} in timeout={250 * (index + 1)}>
+                <ListItem dense divider button onClick={handleSelected}>
+                  <ListItemText primary={message.message} />
+                  <Divider className={classes.divider} orientation="vertical" />
+                  <IconButton color="primary" size="small" aria-label="remove" onClick={handleRemove}>
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                </ListItem>
+              </Grow>
+            );
+          })
+        }
       </List>
     </div>
   );

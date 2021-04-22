@@ -1,4 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+
 import counterReducer from './counter/counterSlice';
 import rolesReducer from './roles/rolesSlice';
 import actionsReducer from './actions/actionsSlice';

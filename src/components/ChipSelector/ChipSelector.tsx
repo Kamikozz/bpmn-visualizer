@@ -1,10 +1,7 @@
 import { useState, ChangeEvent, ReactNode } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Chip from '@material-ui/core/Chip';
+import { FormControl, Select, MenuItem, Chip } from '@material-ui/core';
 
 // import { useAppDispatch, useAppSelector } from '../../app/hooks';
 // import { selectRoles, Role } from '../../features/roles/rolesSlice';

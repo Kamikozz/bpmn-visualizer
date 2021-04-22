@@ -1,10 +1,7 @@
 import { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Fab from '@material-ui/core/Fab';
+import { Container, Grid, Paper, Fab } from '@material-ui/core';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectRoles } from '../../store/roles/rolesSlice';
