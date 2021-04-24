@@ -3,10 +3,12 @@ import {
   List, ListItem, ListItemText, IconButton, Divider,
   Grow, // animations
 } from '@material-ui/core';
-import { Delete as DeleteIcon } from '@material-ui/icons';
+// import { Delete as DeleteIcon } from '@material-ui/icons';
 
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { removeMessage, selectMessages, Message } from '../../store/messages/messagesSlice';
+// import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+  DocumentWithMessages
+} from '../../store/roleActionMap/roleActionMapSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,32 +28,33 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function MessagesList({ onClick }: {
-  onClick: any
+export default function MessagesList({ items, onSelected }: {
+  items: Array<DocumentWithMessages>;
+  onSelected: any;
 }) {
   const classes = useStyles();
-  const messages = useAppSelector(selectMessages);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   return (
     <div className={classes.root}>
       <List className={classes.list}>
         {
-          Object
-            .entries(messages)
-            .map(([ id, message]: [string, Message], index) => {
-            const handleRemove = () => dispatch(removeMessage(id));
+          items
+            .map((document, index) => {
+            // const handleRemove = () => dispatch(removeMessage(id));
             const handleSelected = () => {
-              onClick(message);
+              onSelected(document);
             };
+            const incrementedIndex = index + 1;
+            const animationTimeout = 250 * incrementedIndex;
             return (
-              <Grow key={id} in timeout={250 * (index + 1)}>
-                <ListItem dense divider button onClick={handleSelected}>
-                  <ListItemText primary={message.message} />
-                  <Divider className={classes.divider} orientation="vertical" />
+              <Grow key={document.id} in timeout={animationTimeout}>
+                <ListItem divider button onClick={handleSelected}>
+                  <ListItemText primary={`Документ ${incrementedIndex}`} />
+                  {/* <Divider className={classes.divider} orientation="vertical" />
                   <IconButton color="primary" size="small" aria-label="remove" onClick={handleRemove}>
                     <DeleteIcon color="error" />
-                  </IconButton>
+                  </IconButton> */}
                 </ListItem>
               </Grow>
             );

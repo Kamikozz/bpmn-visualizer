@@ -8,7 +8,6 @@ import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
 import { findEntryNode, selectStartBPRelation } from '../../store/bpRelations/bpRelationsSlice';
-import { selectMessages } from '../../store/messages/messagesSlice';
 
 import Roles from '../Roles/Roles';
 import RoleActionMapper from '../RoleActionMapper/RoleActionMapper';
@@ -55,7 +54,6 @@ function App() {
   const actions = useAppSelector(selectActions);
   const roleActionMap = useAppSelector(selectRoleActionMap);
   const bpEntryNodeId = useAppSelector(selectStartBPRelation);
-  const messages = useAppSelector(selectMessages);
   const dispatch = useAppDispatch();
 
   const roleActionMapEntries = Object.values(roleActionMap);
@@ -71,8 +69,6 @@ function App() {
 
   const [isGenerated, setIsGenerated] = useState(false);
   const phonesVisible = isGenerated && Boolean(bpEntryNodeId);
-
-  // const [phonesVisible, setPhonesVisible] = useState(false);
 
   const handleClick = () => {
     setIsGenerated(true);
@@ -135,15 +131,13 @@ function App() {
 
                         const currentRoleActions = roleActionMapEntries
                           .filter(({ roleId: innerRoleId }) => innerRoleId === roleId)
-                          .map(({ id: roleActionRelationId, actionId }) => {
+                          .map(({ id: roleActionRelationId, actionId, documents }) => {
                             const { name: actionName } = actions[actionId];
                             return {
                               id: roleActionRelationId,
                               actionId,
                               actionName,
-                              messages: bpEntryNodeId === roleActionRelationId
-                                ? Object.keys(messages).length
-                                : null,
+                              documentsCount: documents.length,
                             };
                           });
                         return (

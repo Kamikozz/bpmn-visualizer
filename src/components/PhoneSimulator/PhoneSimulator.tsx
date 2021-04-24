@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -12,17 +12,22 @@ import {
 
 import MessagesList from '../MessagesList/MessagesList';
 
-// import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 // import { selectRoles } from '../../store/roles/rolesSlice';
-// import { selectActions } from '../../store/actions/actionsSlice';
-// import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
-import { Message } from '../../store/messages/messagesSlice';
+import { selectActions } from '../../store/actions/actionsSlice';
+import {
+  addNewStatementToDocument,
+  findAndMoveDocumentNext,
+  addNewStatementToDocumentFindNextRoleActionMoveDocument,
+  selectRoleActionMap,
+  DocumentWithMessages
+} from '../../store/roleActionMap/roleActionMapSlice';
 
 interface RoleAction  {
   id: string;
   actionId: string;
   actionName: string;
-  messages: number | null;
+  documentsCount: number;
 };
 interface PhoneSimulatorProps {
   roleName: string;
@@ -31,7 +36,7 @@ interface PhoneSimulatorProps {
 
 enum Pages {
   MAIN,
-  MESSAGES,
+  DOCUMENTS,
   FORM,
 };
 
@@ -64,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       marginTop: theme.spacing(2),
     },
-    formReadonlyTextfield: {
+    formTextfield: {
       resize: 'vertical',
     },
     formSendResponse: {
@@ -81,64 +86,115 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulatorProps) {
   const classes = useStyles();
   // const roles = useAppSelector(selectRoles);
-  // const actions = useAppSelector(selectActions);
-  // const roleActionMap = useAppSelector(selectRoleActionMap);
+  const actions = useAppSelector(selectActions);
+  const roleActionMap = useAppSelector(selectRoleActionMap);
   // const bpRelations = useAppSelector(selectBPRelations);
+  const dispatch = useAppDispatch();
 
   const [page, setPage] = useState(Pages.MAIN);
-  const [selectedMessage, setSelectedMessage]: [Message | undefined, any] = useState();
-  const [responseOnMessage, setResponseOnMessage] = useState('');
+  const [
+    selectedRoleActionRelationId, setSelectedRoleActionRelationId,
+  ]: [string | undefined, any] = useState();
+  const [
+    selectedDocument, setSelectedDocument,
+  ]: [DocumentWithMessages | undefined, any] = useState();
+  const [responseMessage, setResponseMessage] = useState('');
 
   const showBackButton = page !== Pages.MAIN;
 
-  const handleOpenMessages = () => {
-    setPage(Pages.MESSAGES);
+  const handleOpenDocuments = (selectedRoleActionRelationId: string) => {
+    setSelectedRoleActionRelationId(selectedRoleActionRelationId);
+    setPage(Pages.DOCUMENTS);
   };
   const handleBackButton = () => {
     if (page === Pages.FORM) {
-      setPage(Pages.MESSAGES);
-    } else if (page === Pages.MESSAGES) {
+      setPage(Pages.DOCUMENTS);
+    } else if (page === Pages.DOCUMENTS) {
       setPage(Pages.MAIN);
     }
   };
-  const handleOpenForm = (selected: Message) => {
-    console.log(selected);
-    setSelectedMessage(selected);
+  const handleOpenForm = (selected: DocumentWithMessages) => {
+    // console.log(selected);
+    setSelectedDocument(selected);
     setPage(Pages.FORM);
   };
 
   const renderCurrentPage = () => {
     switch (page) {
-      case Pages.MESSAGES:
+      case Pages.DOCUMENTS: {
+        const documents = roleActionMap[selectedRoleActionRelationId!].documents;
+        const hasDocuments = Boolean(documents.length);
+        if (!hasDocuments) handleBackButton();
         return (
-          <MessagesList onClick={handleOpenForm} />
+          <MessagesList items={documents} onSelected={handleOpenForm} />
         );
+      }
       case Pages.FORM: {
         const handleChange = (event: any) => {
           const value: string = event.target.value;
-          setResponseOnMessage(value);
+          setResponseMessage(value);
         };
+        const handleSubmit = (event: FormEvent) => {
+          event.preventDefault();
+          if (responseMessage.length) {
+            setResponseMessage('');
+            handleBackButton();
+            dispatch(addNewStatementToDocumentFindNextRoleActionMoveDocument(
+              responseMessage.trim(),
+              selectedRoleActionRelationId!,
+              selectedDocument!,
+            ));
+            // setPage(Pages.DOCUMENTS);
+            // dispatch(addNewStatementToDocument({
+            //   text: responseMessage.trim(),
+            //   roleActionRelationId: selectedRoleActionRelationId!,
+            //   document: selectedDocument!,
+            // }));
+            // dispatch(findAndMoveDocumentNext(
+            //   selectedRoleActionRelationId!,
+            //   selectedDocument!,
+            // ));
+          }
+        };
+        const currentActionId = roleActionMap[selectedRoleActionRelationId!].actionId;
+        const responseFieldLabel = actions[currentActionId].formFieldName;
+        const { statements } = selectedDocument!;
+        const statementsArray = Object.values(statements);
         return (
-          <form className={classes.form}>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <fieldset className={classes.formFieldset}>
+              {
+                statementsArray
+                  .map(({ id, message, roleActionRelationId }) => {
+                    const roleActionRelation = roleActionMap[roleActionRelationId];
+                    let fieldLabel = 'Заказ';
+                    if (roleActionRelation) {
+                      const { actionId } = roleActionRelation;
+                      fieldLabel = actions[actionId].formFieldName;
+                    }
+                    return (
+                      <TextField
+                        key={id}
+                        className={classes.margin}
+                        inputProps={{ className: classes.formTextfield }}
+                        label={fieldLabel}
+                        multiline
+                        rows={4}
+                        defaultValue={message.text}
+                        variant="outlined"
+                        fullWidth
+                        disabled
+                      />
+                    );
+                  })
+              }
               <TextField
                 className={classes.margin}
-                inputProps={{ className: classes.formReadonlyTextfield }}
-                label="Заказ"
+                inputProps={{ className: classes.formTextfield }}
+                label={responseFieldLabel}
                 multiline
                 rows={4}
-                defaultValue={selectedMessage?.message}
-                variant="outlined"
-                fullWidth
-                disabled
-              />
-              <TextField
-                className={classes.margin}
-                inputProps={{ className: classes.formReadonlyTextfield }}
-                label="Ответ заказчику"
-                multiline
-                rows={4}
-                value={responseOnMessage}
+                value={responseMessage}
                 variant="outlined"
                 fullWidth
                 onChange={handleChange}
@@ -150,6 +206,7 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
               variant="contained"
               color="primary"
               startIcon={<SendIcon />}
+              disabled={!Boolean(responseMessage.length)}
             >
               Отправить
             </Button>
@@ -161,24 +218,23 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
         return (
           <List>
             {
-              roleActions.map(({ id, actionName, messages }, index) => {
+              roleActions.map(({ id, actionName, documentsCount }, index) => {
+                const handleSelectRoleActionItem = () => {
+                  handleOpenDocuments(id);
+                };
                 return (
                   <Grow key={id} in timeout={250 * (index + 1)}>
                     <ListItem
                       className={classes.listItem}
                       button
-                      onClick={handleOpenMessages}
+                      onClick={handleSelectRoleActionItem}
                     >
                       <ListItemText primary={actionName} />
-                      {
-                        messages !== null  && (
-                          <Badge
-                            className={classes.badge}
-                            badgeContent={messages}
-                            color="primary"
-                          />
-                        )
-                      }
+                        <Badge
+                          className={classes.badge}
+                          badgeContent={documentsCount}
+                          color="primary"
+                        />
                     </ListItem>
                   </Grow>
                 );

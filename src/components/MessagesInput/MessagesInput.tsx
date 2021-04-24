@@ -5,7 +5,9 @@ import { TextField, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import { useAppDispatch } from '../../store/hooks';
-import { addMessage } from '../../store/messages/messagesSlice';
+import {
+  initNewDocument,
+} from '../../store/roleActionMap/roleActionMapSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +35,7 @@ export default function MessagesInput() {
     event.preventDefault();
     if (inputValue.length) {
       setInputValue('');
-      dispatch(addMessage(inputValue.trim()));
+      dispatch(initNewDocument(inputValue.trim()));
     }
   };
 

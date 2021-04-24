@@ -51,7 +51,6 @@ export default function RoleActionMapper() {
   const hasRoleActionPair = Boolean(rolesEntries.length && actionsEntries.length);
 
   const handleAdd = () => {
-    console.log(roles, actions);
     const [[ roleId ]] = rolesEntries;
     const [[ actionId ]] = actionsEntries;
 
