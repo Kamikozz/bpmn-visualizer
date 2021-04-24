@@ -7,14 +7,14 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
-import { findEntryNode, selectStartBPRelation } from '../../store/bpRelations/bpRelationsSlice';
+import { selectStartBPRelation } from '../../store/bpRelations/bpRelationsSlice';
 
-import Roles from '../Roles/Roles';
-import RoleActionMapper from '../RoleActionMapper/RoleActionMapper';
-import RelationsCreator from '../RelationsCreator/RelationsCreator';
-import Graph from '../Graph/Graph';
-import PhoneSimulator from '../PhoneSimulator/PhoneSimulator';
-import Messages from '../MessagesInput/MessagesInput';
+import Roles from '../Roles';
+import RoleActionMapper from '../RoleActionMapper';
+import RelationsCreator from '../RelationsCreator';
+import Graph from '../Graph';
+import PhoneSimulator from '../PhoneSimulator';
+import MessagesInput from '../MessagesInput';
 
 import styles from './App.module.css';
 
@@ -54,7 +54,6 @@ function App() {
   const actions = useAppSelector(selectActions);
   const roleActionMap = useAppSelector(selectRoleActionMap);
   const bpEntryNodeId = useAppSelector(selectStartBPRelation);
-  const dispatch = useAppDispatch();
 
   const roleActionMapEntries = Object.values(roleActionMap);
 
@@ -68,11 +67,11 @@ function App() {
   const hasAnyRoleActionPair = Boolean(roleActionMapEntries.length);
 
   const [isGenerated, setIsGenerated] = useState(false);
-  const phonesVisible = isGenerated && Boolean(bpEntryNodeId);
+  const hasEntryNodeFound = Boolean(bpEntryNodeId);
+  const phonesVisible = isGenerated && hasEntryNodeFound;
 
-  const handleClick = () => {
+  const handleGenerate = () => {
     setIsGenerated(true);
-    dispatch(findEntryNode());
   };
 
   return (
@@ -112,7 +111,7 @@ function App() {
                 phonesVisible && (
                   <Grid item xs={12}>
                     <Paper className={classes.paperMessagesInput}>
-                      <Messages />
+                      <MessagesInput />
                     </Paper>
                   </Grid>
                 )
@@ -141,7 +140,7 @@ function App() {
                             };
                           });
                         return (
-                          <Grid key={roleId} item xs={6}>
+                          <Grid key={roleId} item xs={12} sm={6}>
                             <Paper className={classes.paperSimulator}>
                               <PhoneSimulator roleName={name} roleActions={currentRoleActions} />
                             </Paper>
@@ -160,7 +159,8 @@ function App() {
             size="medium"
             color="primary"
             aria-label="generate"
-            onClick={handleClick}
+            disabled={!hasEntryNodeFound}
+            onClick={handleGenerate}
           >
             Сгенерировать
           </Fab>

@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
-import ChipSelector from '../ChipSelector/ChipSelector';
+import ChipSelector from '../ChipSelector';
 import {
   addBPRelation,
   changeBPRelation,

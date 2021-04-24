@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function MessagesList({ items, onSelected }: {
+export default function DocumentsList({ items, onSelected }: {
   items: Array<DocumentWithMessages>;
   onSelected: any;
 }) {

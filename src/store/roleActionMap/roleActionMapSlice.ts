@@ -24,6 +24,14 @@ export interface DocumentWithMessages {
   statements: Record<string, Statement>;
 };
 
+export interface RoleActionRelation {
+  id: string;
+  roleId: string;
+  actionId: string;
+  documents: Array<DocumentWithMessages>;
+};
+export interface RoleActionMapState extends Record<string, RoleActionRelation> {};
+
 const createNewMessage = (text: string): Message => {
   return {
     id: getId('message'),
@@ -60,20 +68,11 @@ const findNextNode = (bpRelations: BPRelations, roleActionRelationFromId: string
   return null;
 };
 
-export interface RoleActionRelation {
-  id: string;
-  roleId: string;
-  actionId: string;
-  documents: Array<DocumentWithMessages>;
-};
-export interface RoleActionMapState extends Record<string, RoleActionRelation> {};
-
 export const createNewRelation = (roleId: string, actionId: string): RoleActionRelation => {
   return {
     id: getId('roleActionRelation'),
     roleId,
     actionId,
-    // messages: {},
     documents: [],
   };
 };
@@ -257,6 +256,5 @@ export const findAndMoveDocumentNext = (
 //     nextRoleActionId,
 //   }));
 // };
-
 
 export default roleActionMapSlice.reducer;

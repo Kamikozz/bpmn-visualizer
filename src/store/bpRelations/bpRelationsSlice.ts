@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { RootState } from '../store';
+import { RootState, AppThunk } from '../store';
 import { getId } from '../../utils';
 
 export interface BPRelation {
@@ -10,7 +10,13 @@ export interface BPRelation {
 export interface BPRelations extends Record<string, BPRelation> {};
 export interface BPRelationsState {
   items: BPRelations;
-  startNode: string | null;
+  entryNode: string | null;
+};
+
+interface BPRelationChange {
+  id: string;
+  from?: string;
+  to?: string;
 };
 
 export const createNewRelation = (relation: Array<string>): BPRelation => {
@@ -20,52 +26,81 @@ export const createNewRelation = (relation: Array<string>): BPRelation => {
   };
 };
 
+const findEntryNode = (bpRelations: BPRelations) => {
+  const items = Object.values(bpRelations);
+  const nodesFrom: Array<string> = [];
+  const nodesTo: Array<string> = [];
+  items.forEach(({ relation: [relFrom, relTo] }) => {
+    nodesFrom.push(relFrom);
+    nodesTo.push(relTo);
+  });
+  return nodesFrom.find((node) => !nodesTo.includes(node)) || null;
+};
+
 const initialState: BPRelationsState = {
   items: {},
-  startNode: null,
+  entryNode: null,
 };
 
 export const bpRelationsSlice = createSlice({
   name: 'bpRelations',
   initialState,
   reducers: {
-    addBPRelation: (state, action: PayloadAction<Array<string>>) => {
-      const bpRelation = createNewRelation(action.payload);
-      state.items[bpRelation.id] = bpRelation;
+    add: (state, action: PayloadAction<BPRelation>) => {
+      state.items[action.payload.id] = action.payload;
     },
-    removeBPRelation: (state, action: PayloadAction<string>) => {
+    remove: (state, action: PayloadAction<string>) => {
       delete state.items[action.payload];
     },
-    changeBPRelation: (state, action: PayloadAction<{
-      id: string;
-      from?: string;
-      to?: string;
-    }>) => {
+    change: (state, action: PayloadAction<BPRelationChange>) => {
       const { id, from, to } = action.payload;
       const [oldFrom, oldTo] = state.items[id].relation;
       if (from) state.items[id].relation = [from, oldTo];
       if (to) state.items[id].relation = [oldFrom, to];
     },
-    findEntryNode: (state) => {
-      const items = Object.values(state.items);
-      const nodesFrom: Array<string> = [];
-      const nodesTo: Array<string> = [];
-      items.forEach(({ relation: [relFrom, relTo] }) => {
-        nodesFrom.push(relFrom);
-        nodesTo.push(relTo);
-      });
-      state.startNode = nodesFrom.find((node) => !nodesTo.includes(node)) || null;
+    updateEntryNode: (state) => {
+      state.entryNode = findEntryNode(state.items);
     },
   },
 });
 
-export const {
-  addBPRelation,
-  removeBPRelation,
-  changeBPRelation,
-  findEntryNode,
+const {
+  add,
+  remove,
+  change,
+  updateEntryNode,
 } = bpRelationsSlice.actions;
-export const selectStartBPRelation = (state: RootState) => state.bpRelations.startNode;
+export const selectStartBPRelation = (state: RootState) => state.bpRelations.entryNode;
 export const selectBPRelations = (state: RootState) => state.bpRelations.items;
+
+export const addBPRelation = (
+  relation: Array<string>,
+): AppThunk => (
+  dispatch,
+  getState,
+) => {
+  const bpRelation = createNewRelation(relation);
+  dispatch(add(bpRelation));
+  dispatch(updateEntryNode());
+};
+
+export const removeBPRelation = (
+  bpRelationId: string,
+): AppThunk => (
+  dispatch,
+  getState,
+) => {
+  dispatch(remove(bpRelationId));
+  dispatch(updateEntryNode());
+};
+
+export const changeBPRelation = (prevBPRelation: BPRelationChange): AppThunk => (
+  dispatch,
+  getState,
+) => {
+  dispatch(change(prevBPRelation));
+  dispatch(updateEntryNode());
+};
+
 
 export default bpRelationsSlice.reducer;

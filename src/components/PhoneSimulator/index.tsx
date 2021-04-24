@@ -10,7 +10,7 @@ import {
   Send as SendIcon,
 } from '@material-ui/icons';
 
-import MessagesList from '../MessagesList/MessagesList';
+import DocumentsList from '../DocumentsList';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 // import { selectRoles } from '../../store/roles/rolesSlice';
@@ -126,7 +126,7 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
         const hasDocuments = Boolean(documents.length);
         if (!hasDocuments) handleBackButton();
         return (
-          <MessagesList items={documents} onSelected={handleOpenForm} />
+          <DocumentsList items={documents} onSelected={handleOpenForm} />
         );
       }
       case Pages.FORM: {
