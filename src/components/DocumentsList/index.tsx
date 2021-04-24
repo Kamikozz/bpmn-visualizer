@@ -1,11 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
-  List, ListItem, ListItemText, IconButton, Divider,
+  List, ListItem, Breadcrumbs, Typography,
   Grow, // animations
 } from '@material-ui/core';
-// import { Delete as DeleteIcon } from '@material-ui/icons';
-
-// import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   DocumentWithMessages
 } from '../../store/roleActionMap/roleActionMapSlice';
@@ -33,7 +30,6 @@ export default function DocumentsList({ items, onSelected }: {
   onSelected: any;
 }) {
   const classes = useStyles();
-  // const dispatch = useAppDispatch();
 
   return (
     <div className={classes.root}>
@@ -50,11 +46,21 @@ export default function DocumentsList({ items, onSelected }: {
             return (
               <Grow key={document.id} in timeout={animationTimeout}>
                 <ListItem divider button onClick={handleSelected}>
-                  <ListItemText primary={`Документ ${incrementedIndex}`} />
+                  {/* <ListItemText primary={`Документ ${incrementedIndex}`} /> */}
                   {/* <Divider className={classes.divider} orientation="vertical" />
                   <IconButton color="primary" size="small" aria-label="remove" onClick={handleRemove}>
                     <DeleteIcon color="error" />
                   </IconButton> */}
+                  <Breadcrumbs separator="›" aria-label="breadcrumb">
+                    {
+                      Object
+                        .values(document.statements)
+                        .map(({ id, message }) => {
+                          const { text } = message;
+                          return (<Typography key={id} color="textPrimary">{text}</Typography>);
+                      })
+                    }
+                  </Breadcrumbs>
                 </ListItem>
               </Grow>
             );
