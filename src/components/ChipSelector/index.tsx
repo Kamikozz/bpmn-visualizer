@@ -1,18 +1,12 @@
-import { useState, ChangeEvent, ReactNode } from 'react';
+import { useState } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { FormControl, Select, MenuItem, Chip } from '@material-ui/core';
 
-// import { useAppDispatch, useAppSelector } from '../../app/hooks';
-// import { selectRoles, Role } from '../../features/roles/rolesSlice';
-// import { selectActions, Action } from '../../features/actions/actionsSlice';
-// import { addRelation, removeRelation, changeRelation, selectRoleActionMap, RoleActionRelation } from '../../features/roleActionMap/roleActionMapSlice';
+import { ReactChangeEvent } from '../../utils';
 
-type ChipSelectorProps = {
-  onChange: ((event: ChangeEvent<{
-      name?: string | undefined;
-      value: unknown;
-  }>, child: ReactNode) => void) | undefined;
+interface ChipSelectorProps {
+  onChange: ReactChangeEvent;
   menuItems: Array<Array<string>>;
   displayValue: string;
   selectedValue: string;
@@ -74,25 +68,18 @@ const MenuProps = {
   },
 };
 
-export default function ChipSelector(
-  { onChange, menuItems, displayValue, selectedValue, color }: ChipSelectorProps,
-) {
+export default function ChipSelector({
+  onChange,
+  menuItems,
+  displayValue,
+  selectedValue,
+  color,
+}: ChipSelectorProps) {
   const classes = useStyles();
-  // const roles = useAppSelector(selectRoles);
-  // const actions = useAppSelector(selectActions);
-  // const roleActionMap = useAppSelector(selectRoleActionMap);
-  // const dispatch = useAppDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
   const handleClose = () => setIsOpen(false);
   const handleOpen = () => setIsOpen(true);
-
-  // const handleAdd = () => {
-  //   dispatch(addRelation({
-  //     roleId: 'role0',
-  //     actionId: 'action0',
-  //   }));
-  // };
 
   return (
     <div className={classes.formControlContainer}>
@@ -115,17 +102,6 @@ export default function ChipSelector(
           {
             menuItems.map(([id, value]) => <MenuItem key={id} value={id}>{value}</MenuItem>)
           }
-          {/* {
-            Object
-              .entries(roles)
-              .map(
-                ([myRoleId, { name: roleName }]) => (
-                  <MenuItem key={myRoleId} value={myRoleId}>
-                    {roleName} | {actionName}
-                  </MenuItem>
-                )
-              )
-          } */}
         </Select>
       </FormControl>
     </div>

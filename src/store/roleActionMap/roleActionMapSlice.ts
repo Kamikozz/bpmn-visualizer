@@ -108,15 +108,14 @@ export const roleActionMapSlice = createSlice({
       const { roleActionRelationId, document } = action.payload;
       state[roleActionRelationId].documents.push(document);
     },
-    addNewStatementToDocument: (state, action: PayloadAction<{
-      text: string;
-      roleActionRelationId: string;
+    addStatementToDocument: (state, action: PayloadAction<{
+      statement: Statement;
       document: DocumentWithMessages;
     }>) => {
-      const { text, roleActionRelationId, document } = action.payload;
+      const { statement, document } = action.payload;
+      const { roleActionRelationId } = statement;
       const { documents } = state[roleActionRelationId];
       const foundDocument = documents.find(({ id }) => id === document.id)!;
-      const statement = createNewStatement(text, roleActionRelationId);
       foundDocument.statements[statement.id] = statement;
     },
     moveDocumentNext: (state, action: PayloadAction<{
@@ -132,41 +131,6 @@ export const roleActionMapSlice = createSlice({
         nextRoleAction.documents.push(document);
       }
     },
-    addStatementToDocumentAndMoveDocumentNext: (state, action: PayloadAction<{
-      statement: Statement;
-      document: DocumentWithMessages;
-      currentRoleActionId: string;
-      nextRoleActionId: string | null;
-    }>) => {
-      const { statement, document, currentRoleActionId, nextRoleActionId } = action.payload;
-      const currentRoleAction = state[currentRoleActionId];
-      const foundDocument = currentRoleAction.documents.find(({ id }) => id === document.id)!;
-      foundDocument.statements[statement.id] = statement;
-
-      currentRoleAction.documents = currentRoleAction.documents.filter(({ id }) => id !== document.id);
-      if (nextRoleActionId) {
-        const nextRoleAction = state[nextRoleActionId];
-        nextRoleAction.documents.push(foundDocument);
-      }
-    },
-
-    // addMessageByRoleActionId: (state, action: PayloadAction<{
-    //   roleActionId: string;
-    //   text: string;
-    // }>) => {
-    //   const { roleActionId, text } = action.payload;
-    //   const message = createNewMessage(text);
-    //   const relation = state[roleActionId];
-    //   relation.messages[message.id] = message;
-    // },
-    // moveMessageToRoleActionId: (state, action: PayloadAction<{
-    //   messageId: string;
-    //   roleActionFromId: string;
-    //   roleActionToId: string;
-    // }>) => {
-    //   const { messageId, roleActionId } = action.payload;
-    //   const relation = state[];
-    // },
   },
 });
 
@@ -175,9 +139,8 @@ export const {
   removeRelation,
   changeRelation,
   assignDocumentToRoleActionRelation,
-  addNewStatementToDocument,
+  addStatementToDocument,
   moveDocumentNext,
-  addStatementToDocumentAndMoveDocumentNext,
 } = roleActionMapSlice.actions;
 export const selectRoleActionMap = (state: RootState) => state.roleActionMap;
 
@@ -197,9 +160,7 @@ export const initNewDocument = (text: string): AppThunk => (
   }
 };
 
-// addNewStatementToDocumentAndMoveDocumentNext
-
-export const addNewStatementToDocumentFindNextRoleActionMoveDocument = (
+export const addNewStatementToDocumentAndMoveDocumentNext = (
   text: string,
   roleActionRelationId: string,
   document: DocumentWithMessages,
@@ -207,54 +168,22 @@ export const addNewStatementToDocumentFindNextRoleActionMoveDocument = (
   dispatch,
   getState,
 ) => {
-  const statement = createNewStatement(text, roleActionRelationId);
   const bpRelations = selectBPRelations(getState());
-  const nextRoleActionId = findNextNode(bpRelations, roleActionRelationId);
-  dispatch(addStatementToDocumentAndMoveDocumentNext({
+  const statement = createNewStatement(text, roleActionRelationId);
+  dispatch(addStatementToDocument({
     statement,
     document,
-    currentRoleActionId: roleActionRelationId,
-    nextRoleActionId,
   }));
-};
 
-export const findAndMoveDocumentNext = (
-  roleActionRelationId: string,
-  document: DocumentWithMessages,
-): AppThunk => (
-  dispatch,
-  getState,
-) => {
-  const bpRelations = selectBPRelations(getState());
+  const roleActionMap = selectRoleActionMap(getState());
+  const documentWithStatement = roleActionMap[roleActionRelationId].documents
+    .find(({ id }) => id === document.id)!;
   const nextRoleActionId = findNextNode(bpRelations, roleActionRelationId);
   dispatch(moveDocumentNext({
-    document,
+    document: documentWithStatement,
     currentRoleActionId: roleActionRelationId,
     nextRoleActionId,
   }));
 };
-
-// export const addNewStatementToDocument = (
-//   text: string,
-//   roleActionRelationId: string,
-//   document: DocumentWithMessages,
-// ): AppThunk => (
-//   dispatch,
-//   getState,
-// ) => {
-//   const bpRelations = selectBPRelations(getState());
-//   const statement = createNewStatement(text, roleActionRelationId);
-//   dispatch(addStatementToDocument({
-//     statement,
-//     document,
-//   }));
-
-//   const nextRoleActionId = findNextNode(bpRelations, roleActionRelationId);
-//   dispatch(moveDocumentNext({
-//     document,
-//     currentRoleActionId: roleActionRelationId,
-//     nextRoleActionId,
-//   }));
-// };
 
 export default roleActionMapSlice.reducer;

@@ -13,12 +13,9 @@ import {
 import DocumentsList from '../DocumentsList';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-// import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import {
-  addNewStatementToDocument,
-  findAndMoveDocumentNext,
-  addNewStatementToDocumentFindNextRoleActionMoveDocument,
+  addNewStatementToDocumentAndMoveDocumentNext,
   selectRoleActionMap,
   DocumentWithMessages
 } from '../../store/roleActionMap/roleActionMapSlice';
@@ -85,10 +82,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulatorProps) {
   const classes = useStyles();
-  // const roles = useAppSelector(selectRoles);
   const actions = useAppSelector(selectActions);
   const roleActionMap = useAppSelector(selectRoleActionMap);
-  // const bpRelations = useAppSelector(selectBPRelations);
   const dispatch = useAppDispatch();
 
   const [page, setPage] = useState(Pages.MAIN);
@@ -114,7 +109,6 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
     }
   };
   const handleOpenForm = (selected: DocumentWithMessages) => {
-    // console.log(selected);
     setSelectedDocument(selected);
     setPage(Pages.FORM);
   };
@@ -139,21 +133,11 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
           if (responseMessage.length) {
             setResponseMessage('');
             handleBackButton();
-            dispatch(addNewStatementToDocumentFindNextRoleActionMoveDocument(
+            dispatch(addNewStatementToDocumentAndMoveDocumentNext(
               responseMessage.trim(),
               selectedRoleActionRelationId!,
               selectedDocument!,
             ));
-            // setPage(Pages.DOCUMENTS);
-            // dispatch(addNewStatementToDocument({
-            //   text: responseMessage.trim(),
-            //   roleActionRelationId: selectedRoleActionRelationId!,
-            //   document: selectedDocument!,
-            // }));
-            // dispatch(findAndMoveDocumentNext(
-            //   selectedRoleActionRelationId!,
-            //   selectedDocument!,
-            // ));
           }
         };
         const currentActionId = roleActionMap[selectedRoleActionRelationId!].actionId;
