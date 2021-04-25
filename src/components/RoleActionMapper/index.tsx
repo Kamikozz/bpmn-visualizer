@@ -12,7 +12,7 @@ import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import {
   addRelation,
-  removeRelation,
+  removeRoleActionRelation,
   changeRelation,
   selectRoleActionMap,
   RoleActionRelation,
@@ -87,7 +87,7 @@ export default function RoleActionMapper() {
           Object
             .entries(roleActionMap)
             .map(([ id, { roleId, actionId }]: [string, RoleActionRelation]) => {
-              const handleRemove = () => dispatch(removeRelation(id));
+              const handleRemove = () => dispatch(removeRoleActionRelation(id));
               const handleChange = ({newRoleId, newActionId }: {
                 newRoleId?: string;
                 newActionId?: string;

@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { RootState } from '../store';
+import { RootState, AppThunk } from '../store';
 import { getId } from '../../utils';
+import { removeBPRelation, selectBPRelations } from '../bpRelations/bpRelationsSlice';
+import { selectRoleActionMap } from '../roleActionMap/roleActionMapSlice';
 
 export interface Role {
   id: string;
@@ -44,7 +46,7 @@ export const rolesSlice = createSlice({
       const role = createNewRole(action.payload);
       state[role.id] = role;
     },
-    removeRole: (state, action: PayloadAction<string>) => {
+    remove: (state, action: PayloadAction<string>) => {
       delete state[action.payload];
     },
     // increment: (state) => {
@@ -70,16 +72,26 @@ export const rolesSlice = createSlice({
   // },
 });
 
-export const { addRole, removeRole } = rolesSlice.actions;
+export const { addRole, remove } = rolesSlice.actions;
 export const selectRoles = (state: RootState) => state.roles;
-// export const incrementIfOdd = (amount: number): AppThunk => (
-//   dispatch,
-//   getState
-// ) => {
-//   const currentValue = selectCount(getState());
-//   if (currentValue % 2 === 1) {
-//     dispatch(incrementByAmount(amount));
-//   }
-// };
+
+export const removeRole = (roleId: string): AppThunk => (
+  dispatch,
+  getState,
+) => {
+  const roleActionMap = selectRoleActionMap(getState());
+
+  const bpRelations = selectBPRelations(getState());
+  const bpRelationsValues = Object.values(bpRelations);
+  bpRelationsValues.forEach(({ id, relation }) => {
+    relation.forEach((roleActionRelationId) => {
+      const roleAction = roleActionMap[roleActionRelationId];
+      if (roleId === roleAction.roleId) {
+        dispatch(removeBPRelation(id));
+      }
+    });
+  });
+  dispatch(remove(roleId));
+};
 
 export default rolesSlice.reducer;

@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../store';
 import { getId } from '../../utils';
 import {
+  removeBPRelation,
   BPRelation,
   BPRelations,
   selectBPRelations,
@@ -184,6 +185,20 @@ export const addNewStatementToDocumentAndMoveDocumentNext = (
     currentRoleActionId: roleActionRelationId,
     nextRoleActionId,
   }));
+};
+
+export const removeRoleActionRelation = (roleActionId: string): AppThunk => (
+  dispatch,
+  getState,
+) => {
+  const bpRelations = selectBPRelations(getState());
+  const bpRelationsValues = Object.values(bpRelations);
+  bpRelationsValues.forEach(({ id, relation }) => {
+    if (relation.includes(roleActionId)) {
+      dispatch(removeBPRelation(id));
+    }
+  });
+  dispatch(removeRelation(roleActionId));
 };
 
 export default roleActionMapSlice.reducer;
