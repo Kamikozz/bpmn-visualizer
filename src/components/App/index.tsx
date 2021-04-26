@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Grid, Paper, Fab } from '@material-ui/core';
 
@@ -8,6 +6,7 @@ import { selectRoles } from '../../store/roles/rolesSlice';
 import { selectActions } from '../../store/actions/actionsSlice';
 import { selectRoleActionMap } from '../../store/roleActionMap/roleActionMapSlice';
 import { selectStartBPRelation } from '../../store/bpRelations/bpRelationsSlice';
+import { addConfig, selectConfig } from '../../store/configs/configsSlice';
 
 import Roles from '../Roles';
 import RoleActionMapper from '../RoleActionMapper';
@@ -55,9 +54,14 @@ function App() {
   const roleActionMap = useAppSelector(selectRoleActionMap);
   const bpEntryNodeId = useAppSelector(selectStartBPRelation);
 
+  const config = useAppSelector(selectConfig);
+
+  const dispatch = useAppDispatch();
+
   const roleActionMapEntries = Object.values(roleActionMap);
 
-  const rolesWithActionsMap: Record<string, boolean> = roleActionMapEntries
+  const configRoleActionMapEntries = config ? Object.values(config.roleActionMap) : [];
+  const configRolesWithActionsMap: Record<string, boolean> = configRoleActionMapEntries
     .reduce((accumulator: Record<string, boolean>, { roleId }) => {
       accumulator[roleId] = true;
       return accumulator;
@@ -66,12 +70,10 @@ function App() {
   const hasAnyRole = Boolean(Object.keys(roles).length);
   const hasAnyRoleActionPair = Boolean(roleActionMapEntries.length);
 
-  const [isGenerated, setIsGenerated] = useState(false);
   const hasEntryNodeFound = Boolean(bpEntryNodeId);
-  const phonesVisible = isGenerated && hasEntryNodeFound;
 
   const handleGenerate = () => {
-    setIsGenerated(true);
+    dispatch(addConfig());
   };
 
   return (
@@ -108,7 +110,7 @@ function App() {
                 )
               }
               {
-                phonesVisible && (
+                config && (
                   <Grid item xs={12}>
                     <Paper className={classes.paperMessagesInput}>
                       <MessagesInput />
@@ -119,16 +121,16 @@ function App() {
             </Grid>
 
             {
-              phonesVisible && (
+              config && (
                 <Grid item container spacing={3}>
                   {
                     Object
-                      .entries(roles)
+                      .entries(config.roles)
                       .map(([roleId, { name }]) => {
-                        const roleHasActions = rolesWithActionsMap[roleId];
+                        const roleHasActions = configRolesWithActionsMap[roleId];
                         if (!roleHasActions) return undefined;
 
-                        const currentRoleActions = roleActionMapEntries
+                        const currentRoleActions = configRoleActionMapEntries
                           .filter(({ roleId: innerRoleId }) => innerRoleId === roleId)
                           .map(({ id: roleActionRelationId, actionId, documents }) => {
                             const { name: actionName } = actions[actionId];

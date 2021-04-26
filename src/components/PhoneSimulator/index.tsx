@@ -16,9 +16,9 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectActions } from '../../store/actions/actionsSlice';
 import {
   addNewStatementToDocumentAndMoveDocumentNext,
-  selectRoleActionMap,
-  DocumentWithMessages
-} from '../../store/roleActionMap/roleActionMapSlice';
+  selectConfig,
+  DocumentWithMessages,
+} from '../../store/configs/configsSlice';
 
 interface RoleAction  {
   id: string;
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulatorProps) {
   const classes = useStyles();
   const actions = useAppSelector(selectActions);
-  const roleActionMap = useAppSelector(selectRoleActionMap);
+  const { roleActionMap } = useAppSelector(selectConfig)!;
   const dispatch = useAppDispatch();
 
   const [page, setPage] = useState(Pages.MAIN);

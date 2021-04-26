@@ -5,9 +5,7 @@ import { TextField, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import { useAppDispatch } from '../../store/hooks';
-import {
-  initNewDocument,
-} from '../../store/roleActionMap/roleActionMapSlice';
+import { initNewDocument } from '../../store/configs/configsSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

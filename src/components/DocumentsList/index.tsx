@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import {
   DocumentWithMessages
-} from '../../store/roleActionMap/roleActionMapSlice';
+} from '../../store/configs/configsSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
