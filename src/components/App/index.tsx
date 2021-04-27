@@ -1,5 +1,11 @@
+import { useState } from 'react';
+
 import { makeStyles } from '@material-ui/core/styles';
-import { Container, Grid, Paper, Fab } from '@material-ui/core';
+import { Container, Grid, Paper, Fab, AppBar, Tabs, Tab } from '@material-ui/core';
+import {
+  Settings as SettingsIcon,
+  DesktopWindows as WindowsIcon,
+} from '@material-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectRoles } from '../../store/roles/rolesSlice';
@@ -15,37 +21,66 @@ import Graph from '../Graph';
 import PhoneSimulator from '../PhoneSimulator';
 import MessagesInput from '../MessagesInput';
 
-import styles from './App.module.css';
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  mainGrid: {
-  },
-  separateScreen: {
-  },
-  paper: {
-    padding: theme.spacing(2),
-    height: 240,
-  },
-  paperMessagesInput: {
-    padding: theme.spacing(2),
-  },
-  paperGraph: {
-    padding: theme.spacing(2),
-  },
-  paperSimulator: {
-    padding: theme.spacing(2),
-    height: 600,
-  },
-  fab: {
-    position: 'fixed',
-    right: 30,
-    bottom: 15,
-  },
-}));
+const useStyles = makeStyles((theme) => {
+  const appBarHeight = '72px';
+  return {
+    root: {},
+    appBar: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingRight: theme.spacing(3),
+    },
+    tabIndicator: {
+      display: 'flex',
+      '& > span': {
+        backgroundColor: 'white',
+        width: '100%',
+      },
+    },
+    tab: {
+      height: appBarHeight,
+      '& > .MuiTab-wrapper': {
+        flexDirection: 'row',
+      },
+    },
+    tabIcon: {
+      marginRight: '10px',
+    },
+    content: {
+      display: 'flex',
+      flexGrow: 1,
+      marginTop: appBarHeight,
+      height: `calc(100vh - ${appBarHeight})`,
+      overflow: 'auto',
+    },
+    container: {
+      paddingTop: theme.spacing(4),
+      paddingBottom: theme.spacing(4),
+    },
+    paper: {
+      padding: theme.spacing(2),
+      height: 240,
+    },
+    paperMessagesInput: {
+      padding: theme.spacing(2),
+    },
+    paperGraph: {
+      padding: theme.spacing(2),
+    },
+    paperSimulator: {
+      padding: theme.spacing(2),
+      height: 600,
+    },
+    fab: {
+      // position: 'fixed',
+      // top: 15,
+      // right: 30,
+      // zIndex: 1200,
+    },
+  };
+});
 
 function App() {
   const classes = useStyles();
@@ -72,57 +107,100 @@ function App() {
 
   const hasEntryNodeFound = Boolean(bpEntryNodeId);
 
+  const [screen, setScreen] = useState(0);
+  const [, setGraphDirty] = useState({}); // workaround to trigger Graph's render
+
+  // This is workaround of refs rendering the last state of the DOM elements
+  const handleDirtyGraph = () => {
+    setTimeout(() => setGraphDirty({}), 0);
+  };
+
   const handleGenerate = () => {
     dispatch(addConfig());
+    setScreen(1);
+  };
+
+  const handleSwitchScreens = (event: any, screenIndex: number) => {
+    if (screenIndex === screen) return;
+    if (!screenIndex) handleDirtyGraph(); // if goes back to the first main screen -> render relations
+    setScreen(screenIndex);
   };
 
   return (
-    <div className={styles.root}>
-      <main className={styles.content}>
+    <div>
+      <AppBar className={classes.appBar}>
+        <Tabs value={screen} TabIndicatorProps={{
+          className: classes.tabIndicator,
+          children: <span />
+        }} aria-label="tabs" onChange={handleSwitchScreens}>
+          <Tab
+            className={classes.tab}
+            icon={<SettingsIcon className={classes.tabIcon} />}
+            label="Конфиги"
+          />
+          <Tab
+            className={classes.tab}
+            icon={<WindowsIcon className={classes.tabIcon} />}
+            label="Симуляция"
+            disabled={!config}
+          />
+        </Tabs>
+        <Fab
+            className={classes.fab}
+            variant="extended"
+            size="medium"
+            color="primary"
+            aria-label="generate"
+            disabled={!hasEntryNodeFound}
+            onClick={handleGenerate}
+          >
+            Сгенерировать
+          </Fab>
+      </AppBar>
+      <main className={classes.content}>
         <Container className={classes.container} maxWidth={false}>
-          <Grid className={classes.mainGrid} container direction="column" spacing={3}>
-            <Grid className={classes.separateScreen} item container spacing={3}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper className={classes.paper}>
-                  <Roles />
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper className={classes.paper}>
-                  <RoleActionMapper />
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <Paper className={classes.paper}>
-                  <RelationsCreator />
-                </Paper>
-              </Grid>
-
-              {
-                hasAnyRole && hasAnyRoleActionPair && (
-                  <Grid item xs={12}>
-                    <Paper className={classes.paperGraph}>
-                      <Graph />
+          <Grid container direction="column" spacing={3}>
+            {
+              !Boolean(screen) && (
+                <Grid item container spacing={3}>
+                  <Grid item xs={12} sm={6} md={4}>
+                    <Paper className={classes.paper}>
+                      <Roles />
                     </Paper>
                   </Grid>
-                )
-              }
-              {
-                config && (
+
+                  <Grid item xs={12} sm={6} md={4}>
+                    <Paper className={classes.paper}>
+                      <RoleActionMapper onChange={handleDirtyGraph} />
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={12} md={4}>
+                    <Paper className={classes.paper}>
+                      <RelationsCreator />
+                    </Paper>
+                  </Grid>
+
+                  {
+                    hasAnyRole && hasAnyRoleActionPair && (
+                      <Grid item xs={12}>
+                        <Paper className={classes.paperGraph}>
+                          <Graph />
+                        </Paper>
+                      </Grid>
+                    )
+                  }
+                </Grid>
+              )
+            }
+            {
+              Boolean(screen) && config && (
+                <Grid item container spacing={3}>
                   <Grid item xs={12}>
                     <Paper className={classes.paperMessagesInput}>
                       <MessagesInput />
                     </Paper>
                   </Grid>
-                )
-              }
-            </Grid>
-
-            {
-              config && (
-                <Grid item container spacing={3}>
                   {
                     Object
                       .entries(config.roles)
@@ -154,18 +232,6 @@ function App() {
               )
             }
           </Grid>
-
-          <Fab
-            className={classes.fab}
-            variant="extended"
-            size="medium"
-            color="primary"
-            aria-label="generate"
-            disabled={!hasEntryNodeFound}
-            onClick={handleGenerate}
-          >
-            Сгенерировать
-          </Fab>
         </Container>
       </main>
     </div>

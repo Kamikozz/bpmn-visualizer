@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function RoleActionMapper() {
+export default function RoleActionMapper({ onChange }: { onChange: any }) {
   const classes = useStyles();
   const roles = useAppSelector(selectRoles);
   const actions = useAppSelector(selectActions);
@@ -92,6 +92,7 @@ export default function RoleActionMapper() {
                 newRoleId?: string;
                 newActionId?: string;
               }) => {
+                onChange();
                 dispatch(changeRelation({
                   id,
                   roleId: newRoleId,

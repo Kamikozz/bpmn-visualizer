@@ -84,7 +84,7 @@ const BusinessProcesses = ({ roleId, refs }: {
             >{actionName}</div>
           );
         }
-        return undefined;
+        return null;
       })
     }
     </div>
@@ -178,7 +178,7 @@ export default function Graph() {
         rolesArrayIds.map((roleId) => {
           const { name: roleName } = roles[roleId];
           const roleHasActions = rolesWithActionsMap[roleId];
-          if (!roleHasActions) return undefined;
+          if (!roleHasActions) return null;
           return (
             <div key={roleId} className={classes.workspace}>
               <div className={classes.role}>{roleName}</div>
@@ -187,7 +187,11 @@ export default function Graph() {
           );
         })
       }
-      <BusinessProcessesRelations refs={refs} />
+      {
+        refs && Boolean(Object.keys(refs.current).length) && (
+          <BusinessProcessesRelations refs={refs}  />
+        )
+      }
     </div>
   );
 }
