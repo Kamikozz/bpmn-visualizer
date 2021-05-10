@@ -155,7 +155,7 @@ function App() {
             onClick={handleGenerate}
           >
             Сгенерировать
-          </Fab>
+        </Fab>
       </AppBar>
       <main className={classes.content}>
         <Container className={classes.container} maxWidth={false}>
