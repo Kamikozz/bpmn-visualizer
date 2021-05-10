@@ -2,8 +2,21 @@ import { useState, FormEvent } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
-  AppBar, Toolbar, Typography, List, ListItem, ListItemText, Badge, IconButton, TextField, Button,
-  Grow, Zoom, Slide, Collapse, // animations
+  AppBar,
+  Toolbar,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Badge,
+  IconButton,
+  TextField,
+  Button,
+  Grow,
+  InputLabel,
+  Slide,
+  MenuItem,
+  Select, // animations
 } from '@material-ui/core';
 import {
   ArrowBack as BackIcon,
@@ -18,7 +31,9 @@ import {
   addNewStatementToDocumentAndMoveDocumentNext,
   selectConfig,
   DocumentWithMessages,
+  addNewStatementToDocumentAndMoveDocumentNodePrevious
 } from '../../store/configs/configsSlice';
+import {selectRoles} from "../../store/roles/rolesSlice";
 
 interface RoleAction  {
   id: string;
@@ -77,6 +92,9 @@ const useStyles = makeStyles((theme: Theme) =>
     badge: {
       zIndex: 0,
     },
+    previousSelect: {
+      width: '300px'
+    },
   }),
 );
 
@@ -84,6 +102,7 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
   const classes = useStyles();
   const actions = useAppSelector(selectActions);
   const { roleActionMap } = useAppSelector(selectConfig)!;
+  const roles = useAppSelector(selectRoles);
   const dispatch = useAppDispatch();
 
   const [page, setPage] = useState(Pages.MAIN);
@@ -93,8 +112,9 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
   const [
     selectedDocument, setSelectedDocument,
   ]: [DocumentWithMessages | undefined, any] = useState();
+  const [showPreviousActions, setShowPreviousActions] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
-
+  const [previousAction, setPreviousAction] = useState<string | undefined>(undefined);
   const showBackButton = page !== Pages.MAIN;
 
   const handleOpenDocuments = (selectedRoleActionRelationId: string) => {
@@ -113,6 +133,31 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
     setPage(Pages.FORM);
   };
 
+
+  const handleCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault();
+      if (showPreviousActions) {
+        handleBackButton();
+        setResponseMessage('');
+        setShowPreviousActions(false);
+        dispatch(addNewStatementToDocumentAndMoveDocumentNodePrevious(
+          responseMessage.trim(),
+          selectedRoleActionRelationId!,
+          previousAction as string,
+          selectedDocument!,
+        ));
+      } else {
+        setShowPreviousActions(true);
+      }
+  };
+
+  const menuItems = Object
+    .entries(roleActionMap)
+    .map(([menuItemRoleActionId, { roleId, actionId }]) => {
+      const roleName = roles[roleId].name;
+      const actionName = actions[actionId].name;
+      return [menuItemRoleActionId, `${roleName} | ${actionName}`];
+    });
   const renderCurrentPage = () => {
     switch (page) {
       case Pages.DOCUMENTS: {
@@ -151,7 +196,7 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
                 statementsArray
                   .map(({ id, message, roleActionRelationId }) => {
                     const roleActionRelation = roleActionMap[roleActionRelationId];
-                    let fieldLabel = 'Заказ';
+                    let fieldLabel = 'Внешняя система';
                     if (roleActionRelation) {
                       const { actionId } = roleActionRelation;
                       fieldLabel = actions[actionId].formFieldName;
@@ -184,16 +229,53 @@ export default function PhoneSimulator({ roleName, roleActions }: PhoneSimulator
                 onChange={handleChange}
               />
             </fieldset>
-            <Button
-              className={[classes.formSendResponse, classes.margin].join(' ')}
-              type="submit"
-              variant="contained"
-              color="primary"
-              startIcon={<SendIcon />}
-              disabled={!Boolean(responseMessage.length)}
-            >
-              Отправить
-            </Button>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {statementsArray.length > 1 &&
+              <>
+              {showPreviousActions &&
+                <div>
+                  <InputLabel>Бизнес-процесс для возврата</InputLabel>
+                  <Select
+                    value={previousAction}
+                    placeholder="Выберите бизнес-процесс"
+                    label="Бизнес-процесс для возврата"
+                    className={classes.previousSelect}
+                    onChange={(event) => {
+                      setPreviousAction(event.target.value as string)
+                    }}
+                    variant='standard'
+                  >
+                    {
+                      menuItems.map(([id, value]) => <MenuItem key={id} value={id}>{value}</MenuItem>)
+                    }
+                  </Select>
+                </div>
+              }
+              <Button
+                className={[classes.formSendResponse, classes.margin].join(' ')}
+                variant="contained"
+                color="secondary"
+                startIcon={<BackIcon/>}
+                disabled={!responseMessage.length || (showPreviousActions && !previousAction)}
+                onClick={handleCancel}
+              >
+                Отклонить
+              </Button>
+              </>
+              }
+              {!showPreviousActions &&
+                <Button
+                  className={[classes.formSendResponse, classes.margin].join(' ')}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<SendIcon/>}
+                  disabled={!Boolean(responseMessage.length)}
+                >
+                  Отправить
+                </Button>
+              }
+            </div>
           </form>
         );
       }

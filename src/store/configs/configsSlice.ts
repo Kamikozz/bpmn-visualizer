@@ -187,6 +187,35 @@ export const addNewStatementToDocumentAndMoveDocumentNext = (
   }));
 };
 
+export const addNewStatementToDocumentAndMoveDocumentNodePrevious = (
+  text: string,
+  roleActionRelationId: string,
+  previousRoleActionId: string,
+  document: DocumentWithMessages,
+): AppThunk => (
+  dispatch,
+  getState,
+) => {
+  let config = selectConfig(getState());
+  if (!config) return;
+  const statement = createNewStatement(text, roleActionRelationId);
+  dispatch(addStatementToDocument({
+    statement,
+    document,
+  }));
+
+  config = selectConfig(getState());
+  if (!config) return;
+  const { roleActionMap } = config;
+  const documentWithStatement = roleActionMap[roleActionRelationId].documents
+    .find(({ id }) => id === document.id)!;
+  dispatch(moveDocumentNext({
+    document: documentWithStatement,
+    currentRoleActionId: roleActionRelationId,
+    nextRoleActionId: previousRoleActionId,
+  }));
+};
+
 export const addConfig = (): AppThunk => (
   dispatch,
   getState,
